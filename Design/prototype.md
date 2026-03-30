@@ -1,7 +1,7 @@
 # Shaadi AI — Prototype: AI Demonstration Plan
 
 **Version:** 1.0
-**Author:** Varun Nair
+**Author:** Varun Maryada
 **Date:** April 2026
 **Scope:** AI Contract Intelligence Suite — primary capstone feature
 
