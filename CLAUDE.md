@@ -26,7 +26,7 @@ The core pain: **no tool understands the structure of an Indian wedding**, so ev
 ### Complexity Gap: Indian vs. Western Wedding
 
 | Dimension | Western Wedding | Indian Wedding |
-|---|---|---|
+| --- | --- | --- |
 | Number of events | 1 | 4–6 |
 | Vendors to coordinate | 8–12 | 20–30+ |
 | Average guest count (US) | 117 | 300–400+ |
@@ -79,7 +79,7 @@ The core pain: **no tool understands the structure of an Indian wedding**, so ev
 ### Key Competitors
 
 | Competitor | Threat Level | Key Gap |
-|---|---|---|
+| --- | --- | --- |
 | **BollyWeds** | Highest — watch closely | Agency model, not self-serve. No contract review. If they go self-serve, they become a direct threat. |
 | **WeddAI (wedd.ai)** | Medium — early stage | India-market focused, ~100 users, no contract review, no NA diaspora targeting. Moving in the right direction. |
 | **The Knot** | Structural — long-term | Largest US platform, just launched AI in Sept 2025 (style-matching only). Can't easily rebuild for Indian wedding structure. Most likely acquirer. |
@@ -220,7 +220,7 @@ The following are **explicitly excluded** from V1:
 ## 10. Key Friction Points (AI-Solvable, Prioritized)
 
 | Rank | Pain Point | GenAI Solution |
-|---|---|---|
+| --- | --- | --- |
 | 1 | AI outreach doesn't sound like the planner | Style profile builder + edit-and-learn loop |
 | 2 | Contract summary misses a clause | Structured LLM extraction + traffic light flagging |
 | 3 | No vendor discovery for self-managing couples | Conversational vendor discovery flow |
@@ -235,7 +235,7 @@ The following are **explicitly excluded** from V1:
 ## 11. Technology Stack
 
 | Layer | Tool | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | Frontend / App | Bubble.io | All user-facing interfaces — planner dashboard, couple dashboard, contract upload flow |
 | AI / LLM | Claude API (`claude-sonnet-4-6`) | Contract summarization, flag generation, response drafting, outreach generation, cultural setup interview |
 | Automation | Make (formerly Integromat) | Bridges Bubble with Claude API — handles PDF upload, API calls, response routing |
@@ -257,7 +257,7 @@ The following are **explicitly excluded** from V1:
 ## 12. Monetization
 
 | Tier | User | Price | Key Features |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Couple — Standard | Self-managing couple | $39/month | All features, 10 contract reviews/month |
 | Couple — Premium | Complex wedding | $59/month | Unlimited contract reviews, priority AI, parent access |
 | Planner — Professional | Solo planner | $199/month | Unlimited weddings, all AI features, style profile, collaboration dashboard |
@@ -266,7 +266,7 @@ The following are **explicitly excluded** from V1:
 **6-month post-launch revenue projection:**
 - 50 planner accounts × $220 avg = $11,000 MRR
 - 150 couple accounts × $45 avg = $6,750 MRR
-- **Total MRR: ~$17,750 | ARR run rate: ~$213,000**
+- **Total MRR: \~$17,750 | ARR run rate: \~$213,000**
 
 ---
 
@@ -297,7 +297,7 @@ The following are **explicitly excluded** from V1:
 ## 14. Key Risks
 
 | Risk | Likelihood | Mitigation |
-|---|---|---|
+| --- | --- | --- |
 | AI contract summary misses a critical clause | Medium | Clear disclaimer, confidence indicator, ongoing accuracy testing |
 | Planners resist switching from Aisle Planner | High | White-glove migration support, free 3-month trial, import tools |
 | AI drafts don't sound like the planner | Medium | Mandatory style profile onboarding, edit-and-learn loop |
@@ -322,7 +322,7 @@ The following are **explicitly excluded** from V1:
 All documents are available in the project outputs:
 
 | Document | Description |
-|---|---|
+| --- | --- |
 | `ShaadiAI_Capstone_Outline.docx` | Structured 5-section outline: problem, users, solution, AI rationale, central claim |
 | `ShaadiAI_Competitive_Research.docx` | Deep competitive analysis of 9 competitors with capability matrix |
 | `ShaadiAI_PRD_v1.0.docx` | Full Product Requirements Document — 16 sections covering all product decisions |
@@ -332,7 +332,7 @@ All documents are available in the project outputs:
 ## 17. Glossary
 
 | Term | Definition |
-|---|---|
+| --- | --- |
 | Mehndi | Pre-wedding henna ceremony, 1–2 days before wedding |
 | Haldi | Pre-wedding turmeric ceremony, requires cleanable venue |
 | Sangeet | Music and dance celebration, typically evening before wedding |
@@ -348,5 +348,5 @@ All documents are available in the project outputs:
 
 ---
 
-*Last updated: April 2026 | Author: Varun Nair | Version: 1.0*
+*Last updated: April 2026 | Author: Varun Maryada | Version: 1.0*
 *For questions about this document, refer to the full conversation history in Claude.ai*
