@@ -70,6 +70,11 @@ Each case includes:
 - Expected output: `payment_schedule` accurately reports the percentages and timeline. Must not invent dollar amounts based on assumed contract value.
 - Validates: U3
 
+**A-E6: Partial extraction — confidence indicator required**
+- Input: A contract where the payment schedule is clearly stated but liability and force majeure clauses are buried in vague boilerplate that could apply to either topic
+- Expected output: Clearly extractable fields are populated normally; ambiguous fields include an explicit signal such as "This clause is unclear — it may address liability but the language is ambiguous. Review with the vendor before signing." Must not present an uncertain extraction with the same confidence as a clear one.
+- Validates: PRD Section 9.5 — "AI outputs must include a confidence or completeness indicator so users know when to double-check"
+
 ---
 
 ### Negative Cases
@@ -109,6 +114,11 @@ Each case includes:
 - Input: "Additional time beyond the agreed service period may incur additional charges at the caterer's discretion."
 - Expected output: `rating: "YELLOW"`, explanation flags that the rate is unspecified and "at the caterer's discretion" gives the client no certainty, `market_norm_benchmark` states that standard catering contracts specify an hourly overtime rate
 - Validates: B1, B3
+
+**B-S4: Entertainment contract (DJ/Band) — missing overtime clause**
+- Input: DJ contract covering a Sangeet with a 4-hour service window; no mention of overtime policy
+- Expected output: `rating: "RED"` for the overtime clause; explanation notes that Sangeet events routinely run long and a DJ with no stated overtime rate creates open-ended cost exposure; `market_norm_benchmark` references that standard DJ contracts in the Indian wedding market specify an hourly overtime rate, typically $150–$300/hour
+- Validates: B1, B2 — covers the entertainment vendor category explicitly required by PRD Section 7.1.2 (top 5: venue, photographer, caterer, décor, entertainment)
 
 ---
 
@@ -228,6 +238,16 @@ Each case includes:
 - Expected output: Three vendor-side obligations correctly assigned `party: "vendor"`; dates calculated correctly; categories assigned appropriately ("delivery", "confirmation", "logistics")
 - Validates: D1, D3
 
+**D-S3: Obligation extraction includes payment amounts, not just dates**
+- Input: Photographer contract with three staged payments: "$3,000 due at signing", "$4,500 due 60 days before the event", "$2,500 due 7 days before the event"
+- Expected output: Each obligation record captures both the `due_date` (calculated) and the specific dollar amount in the `description` field (e.g., "Pay $4,500 to photographer — second installment"); no amount is omitted or rounded; total sums to contract value
+- Validates: PRD Section 7.1.4 acceptance criteria — ">95% accuracy on payment dates and amounts"
+
+**D-S4: Reminder intervals set correctly on all obligations**
+- Input: Any contract with at least two clearly dated payment obligations
+- Expected output: Every obligation record has `reminder_days_before: [14, 7, 1]`; no obligation is missing the reminder array; no reminder array contains different values unless the contract specifies its own reminder schedule
+- Validates: PRD Section 7.1.4 — "Automated reminders are sent 14 days, 7 days, and 1 day before each obligation deadline"
+
 ---
 
 ### Edge Cases
@@ -305,6 +325,12 @@ Each case includes:
 - Input: specific_requirements = "Vegan menu only. No onion or garlic (Jain dietary requirement). All food must be prepared in a certified Jain kitchen."
 - Expected output: All three requirements appear explicitly in the email body; none are omitted or generalized as "dietary restrictions"
 - Validates: E1
+
+**E-E5: Vendor formality adjustment by category — luxury venue vs. entertainment**
+- Input (run 1): vendor_category = "Venue", venue_name = "The Fairmont Royal York", tone = "professional", no style profile
+- Input (run 2): vendor_category = "DJ", venue_name = "The Hazel Banquet Hall", tone = "professional", no style profile
+- Expected output: Venue email is more formal in structure and vocabulary — full sentences, no contractions, formal close. DJ email is more conversational while remaining professional — shorter sentences, less formal register. Same `tone` setting produces different formality based on vendor category.
+- Validates: PRD Section 7.3 — "Vendor-type awareness adjusts formality automatically — more formal for luxury venues, more casual for entertainment vendors"
 
 ---
 
@@ -510,22 +536,37 @@ These test cases span multiple modules and validate system-level behavior.
 
 ---
 
+## Performance SLA Test Cases
+
+PRD Section 9.1 defines two AI-specific response time targets. These cannot be validated through prompt testing alone — they require end-to-end timing measurements in the integrated Bubble + Make + Claude API environment.
+
+| SLA | Target | How to Test |
+| --- | --- | --- |
+| Contract summary generation | ≤ 60 seconds from PDF upload to structured output | Time the full pipeline: PDF.co extraction + Module A Claude call + Module B Claude call. Test at 5, 15, and 25 pages. |
+| Response draft generation | ≤ 10 seconds from "Draft Response" click to output | Time the Module C Claude call in isolation. Measure across all three tone settings. |
+
+These are infrastructure and API latency tests, not prompt correctness tests. Run them after the Make automation pipeline is built, not during prompt development.
+
+---
+
 ## Golden Test Set Minimum Requirements
 
 Based on the use cases above, the minimum test set for pre-launch validation is:
 
 | Asset | Count | Covers |
-|-------|-------|--------|
-| Real vendor contracts (varied categories) | 10 | A-S1 through A-E4, B-S1 through B-E4 |
+| --- | --- | --- |
+| Real vendor contracts (varied categories) | 10 | A-S1, A-S2, A-S3, A-E4, B-S1–B-S4, B-E3, B-E4 |
 | Synthetic contracts with known RED flags | 5 | B-S1, B-E1, B-E2, B-E4, D-N1 |
-| Contracts with missing sections | 3 | A-E1, A-E3, D-E4 |
+| Contracts with missing or ambiguous sections | 4 | A-E1, A-E3, A-E6, D-E4 |
+| Contracts with staged payment schedules | 3 | D-S1, D-S3, D-S4 |
 | Guest list raw inputs (varied formats) | 5 | G-S1, G-S2, G-E1, G-E2, G-E4 |
 | Budget scenarios with stated priorities | 3 | F-S1, F-E1, F-N1 |
 | Cultural interview transcripts | 4 | H-S1, H-S2, H-E1, H-E4 |
 | Style profiles for response drafting | 3 | C-S2, C-E1, C-E4 |
 | Scanned / degraded PDFs | 2 | A-N1 |
+| Vendor outreach pairs (formality contrast) | 1 pair | E-E5 |
 
 ---
 
 *Last updated: April 2026 | Author: Varun Maryada*
-*Companion documents: Design/master_prompt_v1.md, Design/evals.md*
+*Companion documents: Design/master\_prompt\_v1.md, Design/evals.md*
