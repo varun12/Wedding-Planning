@@ -325,7 +325,8 @@ All documents are available in the project outputs:
 | --- | --- |
 | `ShaadiAI_Capstone_Outline.docx` | Structured 5-section outline: problem, users, solution, AI rationale, central claim |
 | `ShaadiAI_Competitive_Research.docx` | Deep competitive analysis of 9 competitors with capability matrix |
-| `ShaadiAI_PRD_v1.0.docx` | Full Product Requirements Document — 16 sections covering all product decisions |
+| `ShaadiAI_PRD_v1.0.docx` | Full Product Requirements Document v1.0 — 16 sections covering all product decisions (superseded) |
+| `ShaadiAI_PRD_v2.0.md` ← **DEFAULT PRD** | Full Product Requirements Document v2.0 — adds MVP Scope Definition (Section 3) with explicit Capstone vs. V1 vs. V2 build boundaries, and expanded Success Metrics (Section 4) with North Star, capstone criteria, V1 launch metrics, and leading/lagging indicators |
 
 ---
 
