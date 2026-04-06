@@ -1,13 +1,13 @@
 # Shaadi AI
 ## Product Requirements Document
 ### AI-Powered Wedding Planning for the Indian Diaspora
-**Product Faculty — AI PM Certification Capstone | April 2026**
+**Product Faculty — AI PM Certification MVP | April 2026**
 
 | Version | Status | Author | Date |
 |---------|--------|--------|------|
 | 2.0 | Draft | Varun Maryada | April 2026 |
 
-> **What changed in v2.0:** This version adds a dedicated MVP Scope Definition section (Section 3) that clearly separates the Capstone Prototype from the V1 Product Launch and V2+ roadmap. Section 4 (Goals & Success Metrics) has been significantly expanded with a North Star Metric, capstone-specific success criteria, feature-level metrics, and a leading vs. lagging indicator breakdown. All other sections carry forward from v1.0 without change.
+> **What changed in v2.0:** This version adds a dedicated MVP Scope Definition section (Section 3) that clearly separates the MVP Prototype from the V1 Product Launch and V2+ roadmap. Section 4 (Goals & Success Metrics) has been significantly expanded with a North Star Metric, MVP-specific success criteria, feature-level metrics, and a leading vs. lagging indicator breakdown. All other sections carry forward from v1.0 without change.
 
 ---
 
@@ -17,7 +17,7 @@ Shaadi AI is an AI-powered wedding planning platform built natively for the Nort
 
 Shaadi AI solves this by combining deep cultural intelligence with LLM-powered automation — giving Indian wedding planners and self-managing couples a platform that understands their wedding from day one, automates the most painful coordination tasks, and keeps the couple, the planner, and both families aligned throughout the planning journey.
 
-The focused AI feature for this capstone is the **AI Contract Intelligence Suite** — the first AI-powered contract review tool built specifically for South Asian wedding vendors. No competitor offers this capability. It is a genuine white space, a demonstrable prototype, and the trust-building entry point to the full Shaadi AI platform.
+The focused AI feature for this MVP is the **AI Contract Intelligence Suite** — the first AI-powered contract review tool built specifically for South Asian wedding vendors. No competitor offers this capability. It is a genuine white space, a demonstrable prototype, and the trust-building entry point to the full Shaadi AI platform.
 
 **Market Snapshot**
 
@@ -63,21 +63,21 @@ Because no tool understands the structure of an Indian wedding, couples and plan
 
 ## 3. MVP Scope Definition ✦ NEW IN V2.0
 
-This section defines the precise build scope across three horizons: the Capstone Prototype, the V1 Product Launch, and V2+. Each horizon has a distinct definition of done, a distinct set of features, and distinct success criteria. This replaces the implicit scope that was distributed across multiple sections in v1.0.
+This section defines the precise build scope across three horizons: the MVP Prototype, the V1 Product Launch, and V2+. Each horizon has a distinct definition of done, a distinct set of features, and distinct success criteria. This replaces the implicit scope that was distributed across multiple sections in v1.0.
 
 ### 3.1 Scope Horizons
 
 | Horizon | Timeline | Purpose | Definition of Done |
 |---------|----------|---------|-------------------|
-| **Capstone Prototype** | April 2026 | Validate the AI Contract Intelligence concept with real users. Demonstrate product thinking to Product Faculty judges. | End-to-end contract review flow works live in a demo. Validated by 3 planners + 3 couples. |
+| **MVP Prototype** | April 2026 | Validate the AI Contract Intelligence concept with real users. Demonstrate product thinking to Product Faculty judges. | End-to-end contract review flow works live in a demo. Validated by 3 planners + 3 couples. |
 | **V1 Product Launch** | July 2026 | Full self-serve product live on paid tiers. All core features functional. First 50 planner accounts acquired. | All features in Sections 8.1–8.6 live. Paid subscriptions processing. 3 cities active. |
 | **V2+** | Aug 2026+ | Expand platform with vendor directory, multilingual support, mobile native app, and deeper AI personalization. | Defined during V1 retrospective. |
 
 ---
 
-### 3.2 Capstone Prototype — Must Build (April 25, 2026)
+### 3.2 MVP Prototype — Must Build (April 25, 2026)
 
-These are the features that must be fully functional for the capstone demo. "Fully functional" means: real inputs, real AI processing, real outputs — not placeholder UI.
+These are the features that must be fully functional for the MVP demo. "Fully functional" means: real inputs, real AI processing, real outputs — not placeholder UI.
 
 **AI Contract Intelligence Suite (Section 8.1):**
 
@@ -92,7 +92,7 @@ These are the features that must be fully functional for the capstone demo. "Ful
 
 **Minimum Supporting Context (required for AI features to work):**
 
-| Feature | Must Build | Scope for Capstone |
+| Feature | Must Build | Scope for MVP |
 |---------|-----------|-------------------|
 | Wedding setup | Yes | Wedding name, couple names, event type (dropdown), vendor category. Enough context for Claude prompts. |
 | Vendor profile | Yes | Vendor name, category, and contract association. Single-page UI. |
@@ -101,9 +101,9 @@ These are the features that must be fully functional for the capstone demo. "Ful
 
 ---
 
-### 3.3 Capstone Prototype — Mock or Simulate (April 25, 2026)
+### 3.3 MVP Prototype — Mock or Simulate (April 25, 2026)
 
-These features should be represented in the UI to show product breadth, but do not need to be fully functional for the capstone demo. Pre-loaded sample data or non-interactive UI is acceptable.
+These features should be represented in the UI to show product breadth, but do not need to be fully functional for the MVP demo. Pre-loaded sample data or non-interactive UI is acceptable.
 
 | Feature | Mock Approach |
 |---------|--------------|
@@ -119,7 +119,7 @@ These features should be represented in the UI to show product breadth, but do n
 
 ### 3.4 V1 Product Launch — Full Feature Set (July 2026)
 
-All features mocked in the capstone prototype must be fully functional by the V1 launch.
+All features mocked in the MVP prototype must be fully functional by the V1 launch.
 
 | Feature | V1 Requirement |
 |---------|---------------|
@@ -169,7 +169,7 @@ Secondary proxy: **Active planner accounts** (tracks the highest-LTV acquisition
 
 ---
 
-### 4.3 Capstone Success Criteria ✦ NEW
+### 4.3 MVP Success Criteria ✦ NEW
 
 These criteria define success for Phase 0 (April 2026). They are distinct from product launch metrics.
 
@@ -191,7 +191,7 @@ These criteria define success for Phase 0 (April 2026). They are distinct from p
 | "AI summary was accurate enough to trust" score | ≥ 4.0 / 5.0 from planner interviews | Post-demo feedback form |
 | Identified at least one non-obvious friction point | Yes — from interview synthesis | Interview synthesis doc |
 
-**Capstone Presentation:**
+**MVP Presentation:**
 
 | Criterion | Target |
 |-----------|--------|
@@ -370,7 +370,7 @@ Shaadi AI is a product-led business with a sales-assisted motion for the planner
 
 ## 8. Feature Requirements (unchanged from v1.0)
 
-> Scope note: Section 8.1 covers the primary AI feature (capstone focus). Sections 8.2-8.6 cover supporting platform features. See Section 3 for which of these are must-build vs. mock for the capstone prototype.
+> Scope note: Section 8.1 covers the primary AI feature (MVP focus). Sections 8.2-8.6 cover supporting platform features. See Section 3 for which of these are must-build vs. mock for the MVP prototype.
 
 ### 8.1 AI Contract Intelligence Suite ✦ PRIMARY FEATURE
 
@@ -508,7 +508,7 @@ Shaadi AI is a product-led business with a sales-assisted motion for the planner
 
 ### 9.1 AI Contract Intelligence — Core Flow
 
-This is the primary flow for the capstone prototype demonstration.
+This is the primary flow for the MVP prototype demonstration.
 
 | Step | User Action | System Response | Outcome |
 |------|-------------|-----------------|---------|
@@ -578,7 +578,7 @@ This is the primary flow for the capstone prototype demonstration.
 
 ### 11.1 Recommended Stack (No-Code / Low-Code)
 
-> **Constraint:** The capstone prototype must be buildable within a no-code/low-code stack by April 25, 2026, with LLM API integration for the AI Contract Intelligence Suite.
+> **Constraint:** The MVP prototype must be buildable within a no-code/low-code stack by April 25, 2026, with LLM API integration for the AI Contract Intelligence Suite.
 
 | Layer | Tool | Purpose |
 |-------|------|---------|
@@ -654,7 +654,7 @@ The fastest path to initial traction is through Indian wedding planners in the t
 
 | Phase | Timeline | Milestones |
 |-------|----------|------------|
-| 0 — Capstone | March–April 2026 | Working prototype of AI Contract Intelligence Suite built on Bubble + Claude API. Validated with 3 planners and 3 couples. |
+| 0 — MVP | March–April 2026 | Working prototype of AI Contract Intelligence Suite built on Bubble + Claude API. Validated with 3 planners and 3 couples. |
 | 1 — Private Beta | May–June 2026 | 20 planner beta users across 3 cities. Full feature set live. Feedback loop active. Pricing model validated. |
 | 2 — Public Launch | July 2026 | Public launch with all V1 features. Paid tiers live. Active in Toronto, New York, Bay Area. |
 | 3 — Growth | Aug–Dec 2026 | Expand to Chicago and Houston. Launch couple-direct acquisition. Begin V2 planning (vendor directory). |
@@ -671,7 +671,7 @@ The fastest path to initial traction is through Indian wedding planners in the t
 | 4 | BollyWeds opens their platform to self-serve users or raises capital for expansion | Low | High | Move quickly to establish market presence and planner relationships before BollyWeds pivots. Cultural intelligence moat and community network effects are defensible. |
 | 5 | LLM API costs exceed projections at scale | Medium | Medium | Usage limits per subscription tier. Optimize prompts for token efficiency. Monitor per-user API cost against subscription revenue monthly. |
 | 6 | AI adoption hesitancy among older planners or traditional families | Medium | Low | Frame AI features as assistant tools, not replacements. Ensure all AI outputs are editable, not auto-applied. Build trust gradually through accurate, useful outputs. |
-| 7 | Capstone prototype not buildable within timeline | Low | High | Scope is focused on one end-to-end AI feature (Contract Intelligence) in a no-code stack. All other features can be mocked or simulated for the demo. |
+| 7 | MVP prototype not buildable within timeline | Low | High | Scope is focused on one end-to-end AI feature (Contract Intelligence) in a no-code stack. All other features can be mocked or simulated for the demo. |
 
 ---
 
@@ -711,7 +711,7 @@ The fastest path to initial traction is through Indian wedding planners in the t
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
 | 1.0 | April 2026 | Varun Nair | Initial draft — covers full product vision, AI Contract Intelligence Suite as primary feature, competitive landscape, user personas, feature requirements, tech stack, and monetization model |
-| 2.0 | April 2026 | Varun Maryada | Added Section 3: MVP Scope Definition — separates Capstone Prototype (must-build vs. mock), V1 Launch, and V2+ scope. Expanded Section 4: Goals & Success Metrics — adds North Star Metric, capstone success criteria, V1 launch metrics, leading vs. lagging indicator map. All other sections carried forward from v1.0 without change. |
+| 2.0 | April 2026 | Varun Maryada | Added Section 3: MVP Scope Definition — separates MVP Prototype (must-build vs. mock), V1 Launch, and V2+ scope. Expanded Section 4: Goals & Success Metrics — adds North Star Metric, MVP success criteria, V1 launch metrics, leading vs. lagging indicator map. All other sections carried forward from v1.0 without change. |
 
 ---
 
