@@ -21,50 +21,67 @@ serve(async (req) => {
       });
     }
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY not configured");
+    const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
+    if (!ANTHROPIC_API_KEY) {
+      throw new Error("ANTHROPIC_API_KEY not configured");
     }
 
-    const prompt = `You are a professional wedding planner drafting a response to a vendor about a concerning contract clause. 
+    const systemPrompt = `You are Shaadi — the AI assistant inside Shaadi AI, the only wedding planning platform built natively for North American Indian diaspora weddings.
+
+Your task is to draft a professional vendor negotiation email addressing a specific flagged clause in a wedding vendor contract. You write on behalf of the couple or their planner.
+
+## Tone guidelines
+- professional: Confident, direct, peer-to-peer. Short sentences. First names. No "kindly" or "I hope this email finds you well."
+- Always warm and collaborative — this is a wedding relationship, not a lawsuit.
+- Never adversarial in the opening. Lead with appreciation for the partnership opportunity.
+
+## Email structure
+1. Open warmly — express genuine interest in working together
+2. Name the specific clause and what the concern is
+3. Reference that the request aligns with market standards — without being condescending
+4. Propose a specific alternative clause or ask an open-ended question if the right alternative depends on the vendor's response
+5. Close collaboratively — signal the desire to move forward
+
+## Rules
+- Return only the plain email text — no JSON, no subject line label, no markdown formatting.
+- Be specific to the flagged clause — do not write a generic negotiation email.
+- Keep it concise — no more than 200 words.`;
+
+    const userMessage = `Draft a vendor negotiation email for the following:
 
 Vendor: ${vendorName} (${vendorCategory})
-Flagged Clause: "${flag.clause}"
-Risk Level: ${flag.rating}
+Flagged clause: "${flag.clause}"
+Risk level: ${flag.rating}
 Issue: ${flag.explanation}
-Market Benchmark: ${flag.benchmark || "N/A"}
+Market benchmark: ${flag.benchmark || "Not specified"}
 
-Write a professional, warm, but firm email to the vendor addressing this specific clause. The email should:
-1. Open with appreciation for the partnership opportunity
-2. Reference the specific clause by name
-3. Explain the concern clearly without being confrontational
-4. Reference market norms where relevant
-5. Propose a specific alternative or ask for discussion
-6. Close warmly
+Write the email body only.`;
 
-Keep the tone professional but accessible — this is for a wedding, not a lawsuit. Return ONLY the email text, no JSON wrapping.`;
-
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "x-api-key": ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: "claude-sonnet-4-6",
+        max_tokens: 1024,
+        temperature: 0.7,
+        system: systemPrompt,
         messages: [
-          { role: "user", content: prompt },
+          { role: "user", content: userMessage },
         ],
       }),
     });
 
     if (!response.ok) {
       const errText = await response.text();
-      throw new Error(`AI API error [${response.status}]: ${errText}`);
+      throw new Error(`Anthropic API error [${response.status}]: ${errText}`);
     }
 
     const aiData = await response.json();
-    const draft = aiData.choices?.[0]?.message?.content;
+    const draft = aiData.content?.[0]?.text;
 
     return new Response(JSON.stringify({ draft }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
