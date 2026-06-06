@@ -716,14 +716,89 @@ Before each launch gate, the following inputs must be assembled and used to run 
 
 ## Eval Cadence
 
+### Quick-reference table
+
 | When | What | Applies To |
 | --- | --- | --- |
-| Before MVP demo (April 25) | Run Modules A, B, C, D on 5 real contracts. Confirm 4 blockers from eval run are resolved. | **MVP gate** |
+| Before MVP demo (June 15, 2026) | Run Modules A, B, C, D on 5 real contracts. Confirm 4 blockers from eval run are resolved. | **MVP gate** |
 | Before V1 launch (July 2026) | Run full golden test set on all 8 modules. All benchmarks must pass. | **V1 gate** |
 | Before any prompt change goes to production | Run full golden test set on all affected modules | Ongoing |
-| Weekly during private beta (May–June 2026) | Run Modules A and B only (highest risk) | Beta monitoring |
+| Weekly during private beta (May–July 2026) | Run Modules A and B only (highest risk) | Beta monitoring |
 | After each 25 new contracts added to the benchmark library | Re-run Module B | Ongoing |
 | Before any model upgrade (new Claude version) | Full suite | Model changes |
+| User-reported failure in production | Affected module only | Targeted run |
+| Monthly post-launch | All 8 modules | Production monitoring |
+
+---
+
+### Cadence reasoning — by trigger
+
+#### Core principle: trigger-based, not calendar-based
+
+Most evals should fire when something changes, not on a fixed schedule. A weekly eval run when nothing changed wastes time; skipping an eval after a prompt change is how silent regressions ship. The three main triggers — new data, prompt changes, and post-launch monitoring — map to different cadences for different reasons.
+
+---
+
+#### Trigger 1 — New data (contracts added to corpus)
+
+**Cadence: every 25 contracts added, re-run Module B only.**
+
+Module B (clause flagging) is the only module whose accuracy directly depends on the size and quality of the contract corpus — it is the one being calibrated against real market norms. Adding 25 contracts is enough to potentially shift what "standard" looks like for a vendor category without being so frequent that you are re-running constantly.
+
+Modules A, C, D, and E do not depend on the corpus — they depend on the prompt. Adding contracts does not change how well Claude summarizes text or drafts emails. Running the full suite on every corpus update burns human review time for no signal gain.
+
+The exception: if a new batch of contracts reveals a systematic failure mode in Module B (e.g., all Tamil caterer contracts get mis-flagged), that is a signal to fix the prompt — which then triggers a full affected-module eval run.
+
+---
+
+#### Trigger 2 — New or changed prompts
+
+**Cadence: before every promotion to production, run the full golden test set on all affected modules.**
+
+This is non-negotiable. The master prompt v2.0 document defines 15 variations to test (V1–V15). Each one must be run against the full golden test set before being deployed — not just the module it targets. A change to the core system prompt (V1–V4) affects all 8 modules simultaneously. A change to Module B's flag rules (V8–V10) might indirectly affect Module A outputs if the two share a combined API call (which they do in the current implementation).
+
+The practical workflow:
+- Make a prompt change on a branch
+- Run the full golden test set — automated Tier 1 checks first (fast, free), then model grader calls (Tier 2), then human review only where needed (Tier 3)
+- Compare scores against the baseline run
+- Any module that regresses below its threshold blocks the change
+
+The 15 variations in master_prompt_v2.md should be treated as a backlog of A/B tests — run one at a time, eval before promoting, never stack two untested changes.
+
+---
+
+#### Trigger 3 — Post-launch monitoring
+
+**Cadence: weekly (Modules A and B) during private beta; monthly (full suite) post-launch; immediately on any model upgrade.**
+
+**Private beta (now through July 2026):**
+Weekly runs on Modules A and B — the highest-risk modules where a failure (missed RED flag, hallucinated clause) causes direct user harm. Lightweight: 5 contracts through the golden test set, automated checks only. Takes under an hour if Tier 1 is scripted.
+
+**Post-launch (July 2026 onward):**
+Monthly full suite. The signal to watch for is distributional shift — real user contracts are more diverse than the golden test set. Once production data flows, add the most unusual contracts to the golden set and re-run. This is how the benchmark library grows from 56 to 200+ contracts.
+
+**Model upgrades (any new Claude version):**
+Full suite immediately before switching. Anthropic releases new model versions periodically and behavior changes — even within the same model family. A new version that improves response drafting might subtly change how it handles ambiguous clauses in Module B. Always verify before promoting a new model to production.
+
+**Production signals that should trigger an unscheduled run:**
+- High user edit rate on AI-generated response drafts → Module C may be off
+- User-reported incorrect contract summaries → Module A failure
+- Obligation dates that do not match the contract → Module D failure
+
+These are leading indicators that a formal eval run is needed before the next scheduled one.
+
+---
+
+### Numbered summary
+
+1. **Core principle** | Trigger-based, not calendar-based | Running evals when nothing changed wastes time; skipping them after a change is how regressions ship
+2. **New data trigger** | Re-run Module B only after every 25 contracts added | Module B is the only module calibrated against the corpus; other modules depend on the prompt, not the data
+3. **Prompt change trigger** | Full golden test set on all affected modules before any promotion to production | A core system prompt change (V1–V4) affects all 8 modules; a combined A+B+D call means Module B changes can silently affect A and D outputs
+4. **Prompt A/B testing** | One variation at a time; eval before promoting; never stack untested changes | Stacking changes makes it impossible to attribute a regression to a specific variation
+5. **Private beta monitoring** | Weekly runs on Modules A and B only | These are the highest-risk modules where a failure causes direct user harm; weekly cadence is lightweight if Tier 1 is scripted
+6. **Post-launch monitoring** | Monthly full suite | Real user contracts are more diverse than the golden test set; monthly cadence catches distributional shift before it becomes a user-visible problem
+7. **Model upgrade trigger** | Full suite immediately before switching to any new Claude version | Model behavior changes even within the same family; verify before promoting a new model to production
+8. **Production failure signal** | Unscheduled targeted run on the affected module | High edit rate on drafts (Module C), user-reported wrong summaries (Module A), or wrong obligation dates (Module D) are leading indicators that a formal run is needed now, not at the next scheduled interval
 
 ---
 
@@ -753,8 +828,9 @@ Before each launch gate, the following inputs must be assembled and used to run 
 | --- | --- | --- |
 | v1.0 | April 2026 | Initial framework — 8 modules, universal benchmarks, scoring summary, failure mode taxonomy, golden test set requirements, eval cadence |
 | v2.0 | April 2026 | Added Phase Applicability section mapping all benchmarks to MVP / V1 / V2+. Added Confirmed Failures section documenting 4 blockers and 2 reliability concerns from eval run on master_prompt_v1.0 (April 4, 2026). Added F9 and F10 to failure mode taxonomy. Updated scoring summary table with Phase column. Updated Known Limitations with confirmed evidence. |
+| v3.0 | June 2026 | Updated MVP demo date to June 15. Added monthly post-launch monitoring row and user-reported failure row to cadence table. Expanded Eval Cadence section with full trigger-based reasoning for new data, prompt changes, and post-launch monitoring. Added numbered summary. |
 
 ---
 
-*Last updated: April 2026 | Author: Varun Maryada*
+*Last updated: June 2026 | Author: Varun Maryada*
 *Companion documents: Design/master\_prompt\_v1.md, Development/master\_prompt\_v2.md, Development/example\_data.md, Design/use\_cases.md*
