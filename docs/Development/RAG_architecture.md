@@ -360,6 +360,8 @@ The embedding cost is negligible. The contract text is the cost to manage.
 
 ## Decision Summary
 
+### Table format
+
 | Decision | Choice | Why |
 |----------|--------|-----|
 | Data source priority | Vendor contracts (56+ target) | Only source of ground-truth market norm benchmarks for Module B flagging |
@@ -377,6 +379,24 @@ The embedding cost is negligible. The contract text is the cost to manage.
 | Retrieved context format | Rating + market norm + first 100 tokens of clause text | Saves ~600 tokens per call vs. full clause text; model needs pattern, not full re-read |
 | Biggest real cost | Contract text input tokens (2,000–5,000 per contract) | Not the retrieval; consider combined-module call (A+B+D together) to reduce contract text cost by two-thirds |
 
+### Numbered format
+
+1. **Primary data source** | Vendor contracts (56+ minimum across 7 categories) | The only source of ground-truth market norm benchmarks; without real contracts, Module B's flagging is unvalidated general legal knowledge, not Indian wedding market knowledge
+2. **Cultural knowledge source** | Structured reference cards per tradition, injected into system prompt | Static reference data, not retrieval candidates; built once, validated by community reviewers, doesn't need a vector database
+3. **Data cleaning** | PII removal → format normalization → clause segmentation → human rating | Each step exists for accuracy, not just compliance: PII prevents cross-contract contamination; normalization prevents PDF artifacts from triggering false uncertainty flags; human ratings are the ground truth Module B is measured against
+4. **V1 RAG approach** | None — static prompt rules only | No corpus yet; RAG on an empty or tiny database produces worse results than well-written static rules because retrieved examples are noisy and non-representative
+5. **V1.1 approach (56–100 contracts)** | Hardcoded few-shot examples (2–3 per vendor category) in the prompt | Manually selected best examples; ~1,200 token cost per call; outperforms dynamic retrieval until the corpus is large enough to provide consistent signal
+6. **V2 RAG trigger** | 200+ labeled contracts | Below this threshold, a static curated selection beats dynamic retrieval; above it, dynamic retrieval surfaces better matches than any fixed set
+7. **Chunking unit** | One clause per chunk (not document, not sentence) | Document-level retrieval injects 2,000–5,000 tokens to find a 200-token clause — expensive and noisy; sentence-level loses the context needed to interpret a clause; clause is the natural semantic unit
+8. **Chunk overlap** | None | Clauses have hard section boundaries; overlap adds token cost with no accuracy benefit
+9. **Embedding model** | text-embedding-3-small (OpenAI) | Full corpus embedding costs ~$0.003 total; sufficient quality for clause-level similarity; no domain-specific model needed at this data volume
+10. **Embedding input format** | clause_type + ": " + clause_text | Prepending clause type anchors the embedding to the clause category, preventing false matches between clauses with similar wording but different legal meaning
+11. **Vector database** | pgvector (built into Supabase) | Already in the stack; free; eliminates a separate service and API key; handles up to thousands of vectors without performance concerns
+12. **Retrieval filter** | vendor_category + clause_type filter applied before vector ranking | Eliminates cross-category noise before the similarity calculation runs; ensures a venue force majeure query retrieves venue examples, not photographer examples
+13. **top_k** | 3 | Three examples inject ~300–1,200 tokens; diminishing accuracy returns above 3 — the model calibrates from contrast between examples, not from volume
+14. **Retrieved context injection** | Rating + market norm + first 100 tokens of clause text (not full text) | Saves ~600 tokens per call vs. injecting full clause text; the model needs the pattern and rating, not a full re-read of the retrieved clause
+15. **Biggest real token cost** | Contract text (2,000–5,000 tokens per contract, paid per module call) | Not the retrieval overhead; consider combining Modules A, B, and D into a single call to pass the contract text once instead of three times, cutting input tokens by two-thirds
+
 ---
 
 ## Version Log
@@ -384,7 +404,7 @@ The embedding cost is negligible. The contract text is the cost to manage.
 | Version | Date | Changes |
 |---------|------|---------|
 | v1.0 | April 2026 | Initial architecture — data sources, preparation pipeline, RAG design for V2 |
-| v2.0 | June 2026 | Stack update (pgvector replaces Pinecone; Supabase replaces Bubble+Make). Added reasoning for each decision. Added token efficiency section with cost reference table. Added combined-module call consideration. Added decision summary table. |
+| v2.0 | June 2026 | Stack update (pgvector replaces Pinecone; Supabase replaces Bubble+Make). Added reasoning for each decision. Added token efficiency section with cost reference table. Added combined-module call consideration. Added decision summary in table and numbered formats. |
 
 ---
 
