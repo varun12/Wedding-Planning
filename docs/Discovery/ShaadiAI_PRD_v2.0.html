@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shaadi AI — Product Requirements Document v2.0</title>
+  <style>
+    /* ── Base ── */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 11pt;
+      line-height: 1.65;
+      color: #1a1a1a;
+      background: #fff;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ── Page wrapper ── */
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 56px;
+    }
+
+    /* ── Cover header ── */
+    .cover {
+      border-bottom: 3px solid #c8963e;
+      padding-bottom: 24px;
+      margin-bottom: 36px;
+    }
+    .cover h1 {
+      font-size: 28pt;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin: 0 0 4px 0;
+      letter-spacing: -0.5px;
+    }
+    .cover .subtitle {
+      font-size: 13pt;
+      color: #555;
+      margin: 0 0 2px 0;
+    }
+    .cover .tagline {
+      font-size: 10pt;
+      color: #888;
+      margin: 0 0 20px 0;
+    }
+
+    /* ── Headings ── */
+    h1 { font-size: 22pt; font-weight: 700; color: #1a1a1a; margin: 36px 0 12px; border-bottom: 2px solid #c8963e; padding-bottom: 6px; }
+    h2 { font-size: 15pt; font-weight: 700; color: #1a1a1a; margin: 28px 0 10px; }
+    h3 { font-size: 12.5pt; font-weight: 600; color: #2c2c2c; margin: 22px 0 8px; }
+    h4 { font-size: 11pt; font-weight: 600; color: #444; margin: 16px 0 6px; }
+
+    /* First h1 is handled by .cover — hide the duplicate */
+    .content > h1:first-child { display: none; }
+
+    /* ── Paragraphs & lists ── */
+    p { margin: 0 0 10px; }
+    ul, ol { margin: 0 0 12px; padding-left: 22px; }
+    li { margin-bottom: 4px; }
+    li > ul { margin-top: 4px; }
+
+    /* ── Blockquote (used for v2 change note) ── */
+    blockquote {
+      background: #fdf6ec;
+      border-left: 4px solid #c8963e;
+      margin: 20px 0;
+      padding: 14px 18px;
+      border-radius: 0 6px 6px 0;
+      color: #444;
+      font-size: 10.5pt;
+    }
+    blockquote p { margin: 0; }
+
+    /* ── Tables ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      font-size: 10pt;
+    }
+    thead tr {
+      background: #2c2c2c;
+      color: #fff;
+    }
+    thead th {
+      padding: 8px 12px;
+      text-align: left;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+    tbody tr { border-bottom: 1px solid #e5e5e5; }
+    tbody tr:nth-child(even) { background: #f8f8f8; }
+    tbody td {
+      padding: 7px 12px;
+      vertical-align: top;
+    }
+
+    /* ── Inline code ── */
+    code {
+      background: #f3f3f3;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-family: "SF Mono", "Fira Code", Consolas, monospace;
+      font-size: 9.5pt;
+    }
+
+    /* ── Horizontal rule ── */
+    hr {
+      border: none;
+      border-top: 1px solid #e0e0e0;
+      margin: 28px 0;
+    }
+
+    /* ── Section number badges ── */
+    h2 { position: relative; }
+
+    /* ── NEW / EXPANDED badges ── */
+    h2 .badge, h3 .badge {
+      display: inline-block;
+      font-size: 7.5pt;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 10px;
+      vertical-align: middle;
+      margin-left: 8px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    /* ── Strong in tables ── */
+    td strong { color: #b87820; }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 48px;
+      padding-top: 16px;
+      border-top: 1px solid #ddd;
+      font-size: 9pt;
+      color: #999;
+      text-align: center;
+    }
+
+    /* ── Print ── */
+    @media print {
+      body { font-size: 10pt; }
+      .page { padding: 0; max-width: 100%; }
+      h1 { font-size: 18pt; }
+      h2 { font-size: 13pt; page-break-after: avoid; }
+      h3 { font-size: 11pt; page-break-after: avoid; }
+      h4 { page-break-after: avoid; }
+      table { page-break-inside: avoid; font-size: 9pt; }
+      blockquote { page-break-inside: avoid; }
+      @page {
+        margin: 20mm 18mm 20mm 18mm;
+        size: A4;
+      }
+      @page :first {
+        margin-top: 24mm;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <div class="cover">
+      <div class="cover-logo" style="font-size:9pt; color:#c8963e; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:12px;">Shaadi AI</div>
+      <h1 class="cover-title" style="font-size:26pt; font-weight:700; margin:0 0 6px;">Product Requirements Document</h1>
+      <p class="subtitle" style="font-size:13pt; color:#555; margin:0 0 4px;">AI-Powered Wedding Planning for the Indian Diaspora</p>
+      <p class="tagline" style="font-size:10pt; color:#888; margin:0 0 20px;">Product Faculty — AI PM Certification Capstone &nbsp;|&nbsp; April 2026</p>
+      <table style="width:auto; margin:0; font-size:10pt;">
+        <thead>
+          <tr><th style="padding:6px 16px 6px 0; background:none; color:#555; font-weight:600;">Version</th><th style="padding:6px 16px 6px 0; background:none; color:#555; font-weight:600;">Status</th><th style="padding:6px 16px 6px 0; background:none; color:#555; font-weight:600;">Author</th><th style="padding:6px 0; background:none; color:#555; font-weight:600;">Date</th></tr>
+        </thead>
+        <tbody>
+          <tr><td style="padding:4px 16px 4px 0; border:none; background:none; font-weight:700; color:#c8963e;">2.0</td><td style="padding:4px 16px 4px 0; border:none; background:none;">Draft</td><td style="padding:4px 16px 4px 0; border:none; background:none;">Varun Maryada</td><td style="padding:4px 0; border:none; background:none;">April 2026</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="content">
+<h1>Shaadi AI</h1>
+<h2>Product Requirements Document</h2>
+<h3>AI-Powered Wedding Planning for the Indian Diaspora</h3>
+<p><strong>Product Faculty — AI PM Certification Capstone | April 2026</strong></p>
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Status</th>
+<th>Author</th>
+<th>Date</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2.0</td>
+<td>Draft</td>
+<td>Varun Maryada</td>
+<td>April 2026</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>What changed in v2.0:</strong> This version adds a dedicated MVP Scope Definition section (Section 3) that clearly separates the Capstone Prototype from the V1 Product Launch and V2+ roadmap. Section 4 (Goals &amp; Success Metrics) has been significantly expanded with a North Star Metric, capstone-specific success criteria, feature-level metrics, and a leading vs. lagging indicator breakdown. All other sections carry forward from v1.0 without change.</p>
+</blockquote>
+<hr />
+<h2>1. Executive Summary</h2>
+<p>Shaadi AI is an AI-powered wedding planning platform built natively for the North American Indian diaspora. Every major wedding planning tool available today — The Knot, Zola, WeddingWire, Aisle Planner — was architected around a single-day Western wedding. None of them understand what an Indian wedding actually is: a 4-6 event, multi-day, multi-vendor, multi-family coordination challenge with a budget that averages $225,000–$285,000 per wedding in the United States.</p>
+<p>Shaadi AI solves this by combining deep cultural intelligence with LLM-powered automation — giving Indian wedding planners and self-managing couples a platform that understands their wedding from day one, automates the most painful coordination tasks, and keeps the couple, the planner, and both families aligned throughout the planning journey.</p>
+<p>The focused AI feature for this capstone is the <strong>AI Contract Intelligence Suite</strong> — the first AI-powered contract review tool built specifically for South Asian wedding vendors. No competitor offers this capability. It is a genuine white space, a demonstrable prototype, and the trust-building entry point to the full Shaadi AI platform.</p>
+<p><strong>Market Snapshot</strong></p>
+<table>
+<thead>
+<tr>
+<th>Market</th>
+<th>Size</th>
+<th>Growth Rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Wedding Planning Software (Global)</td>
+<td>$1.52B (2024)</td>
+<td>13.1% CAGR to 2033</td>
+</tr>
+<tr>
+<td>US Wedding Planning Services</td>
+<td>$64.93B (2024)</td>
+<td>8.5% CAGR to 2030</td>
+</tr>
+<tr>
+<td>Indian Diaspora Wedding Market</td>
+<td>$15B+ annually</td>
+<td>14.3% CAGR (India segment)</td>
+</tr>
+<tr>
+<td>Avg. Indian Wedding Cost (US)</td>
+<td>$225K–$285K</td>
+<td>5-8x US average</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>2. Problem Statement</h2>
+<h3>2.1 The Core Problem</h3>
+<p>Existing wedding planning tools are culturally blind — and for Indian weddings, that blindness makes them nearly useless. Every major platform was built for a single-day Western wedding: one venue, one ceremony, one reception, one guest list. An Indian wedding is a fundamentally different coordination challenge, and no current tool is built to handle it.</p>
+<h3>2.2 The Complexity Gap</h3>
+<p>A typical Indian wedding spans 4-6 distinct events — Mehndi, Haldi, Sangeet, Baraat, Wedding Ceremony, and Reception — each with its own venue, vendor set, guest subset, dress code, timeline, and budget line. The coordination complexity is an order of magnitude higher than a Western wedding.</p>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Western Wedding</th>
+<th>Indian Wedding</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Number of events</td>
+<td>1</td>
+<td>4-6</td>
+</tr>
+<tr>
+<td>Vendors to coordinate</td>
+<td>8-12</td>
+<td>20-30+</td>
+</tr>
+<tr>
+<td>Average guest count (US)</td>
+<td>117</td>
+<td>300-400+</td>
+</tr>
+<tr>
+<td>Average total cost (US)</td>
+<td>$34,000</td>
+<td>$225,000-$285,000</td>
+</tr>
+<tr>
+<td>Active decision makers</td>
+<td>Couple</td>
+<td>Couple + both families</td>
+</tr>
+<tr>
+<td>Planning duration</td>
+<td>6-12 months</td>
+<td>12-18 months</td>
+</tr>
+</tbody>
+</table>
+<h3>2.3 Where the Pain Lives Today</h3>
+<p>Because no tool understands the structure of an Indian wedding, couples and planners fall back on a fragmented system: WhatsApp groups for family communication, colour-coded Google Sheets for budget and vendor tracking, and email chains for outreach and contract management. The stress is not the complexity itself — it is the absence of a system built to handle it.</p>
+<ul>
+<li>Vendor contracts are reviewed manually — or not at all — across 20+ agreements</li>
+<li>Budget tracking across 6 events breaks down as quotes come in from multiple vendors simultaneously</li>
+<li>Guest list segmentation by event is managed manually, leading to errors and wrong invitations</li>
+<li>Vendor outreach requires hours of individualized email writing per wedding</li>
+<li>The couple and planner are rarely looking at the same information at the same time</li>
+</ul>
+<hr />
+<h2>3. MVP Scope Definition ✦ NEW IN V2.0</h2>
+<p>This section defines the precise build scope across three horizons: the Capstone Prototype, the V1 Product Launch, and V2+. Each horizon has a distinct definition of done, a distinct set of features, and distinct success criteria. This replaces the implicit scope that was distributed across multiple sections in v1.0.</p>
+<h3>3.1 Scope Horizons</h3>
+<table>
+<thead>
+<tr>
+<th>Horizon</th>
+<th>Timeline</th>
+<th>Purpose</th>
+<th>Definition of Done</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Capstone Prototype</strong></td>
+<td>April 2026</td>
+<td>Validate the AI Contract Intelligence concept with real users. Demonstrate product thinking to Product Faculty judges.</td>
+<td>End-to-end contract review flow works live in a demo. Validated by 3 planners + 3 couples.</td>
+</tr>
+<tr>
+<td><strong>V1 Product Launch</strong></td>
+<td>July 2026</td>
+<td>Full self-serve product live on paid tiers. All core features functional. First 50 planner accounts acquired.</td>
+<td>All features in Sections 8.1–8.6 live. Paid subscriptions processing. 3 cities active.</td>
+</tr>
+<tr>
+<td><strong>V2+</strong></td>
+<td>Aug 2026+</td>
+<td>Expand platform with vendor directory, multilingual support, mobile native app, and deeper AI personalization.</td>
+<td>Defined during V1 retrospective.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3>3.2 Capstone Prototype — Must Build (April 25, 2026)</h3>
+<p>These are the features that must be fully functional for the capstone demo. "Fully functional" means: real inputs, real AI processing, real outputs — not placeholder UI.</p>
+<p><strong>AI Contract Intelligence Suite (Section 8.1):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Sub-Feature</th>
+<th>Must Build</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PDF upload and text extraction</td>
+<td>Yes</td>
+<td>PDF.co via Make. Must handle standard formatted contracts.</td>
+</tr>
+<tr>
+<td>Plain-language contract summary</td>
+<td>Yes</td>
+<td>Claude API. All 7 key sections extracted and displayed.</td>
+</tr>
+<tr>
+<td>Traffic light clause flagging</td>
+<td>Yes</td>
+<td>Green / Yellow / Red with explanations and market norm benchmarks.</td>
+</tr>
+<tr>
+<td>Contract risk score (Low / Medium / High)</td>
+<td>Yes</td>
+<td>Aggregate of flags. Displayed prominently at top of summary.</td>
+</tr>
+<tr>
+<td>One-click response drafting</td>
+<td>Yes</td>
+<td>Draft generated in &lt;10 seconds. Addresses specific flagged clause.</td>
+</tr>
+<tr>
+<td>Obligation extraction on signing</td>
+<td>Yes</td>
+<td>Structured JSON from Claude. Populates obligation list.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Minimum Supporting Context (required for AI features to work):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Must Build</th>
+<th>Scope for Capstone</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Wedding setup</td>
+<td>Yes</td>
+<td>Wedding name, couple names, event type (dropdown), vendor category. Enough context for Claude prompts.</td>
+</tr>
+<tr>
+<td>Vendor profile</td>
+<td>Yes</td>
+<td>Vendor name, category, and contract association. Single-page UI.</td>
+</tr>
+<tr>
+<td>Planner login and couple login</td>
+<td>Yes</td>
+<td>Two distinct login roles. Planner sees full contract details. Couple sees summary view.</td>
+</tr>
+<tr>
+<td>Obligation tracker display</td>
+<td>Yes</td>
+<td>List view of extracted obligations with due dates. Manual complete toggle.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3>3.3 Capstone Prototype — Mock or Simulate (April 25, 2026)</h3>
+<p>These features should be represented in the UI to show product breadth, but do not need to be fully functional for the capstone demo. Pre-loaded sample data or non-interactive UI is acceptable.</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Mock Approach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Multi-event wedding structure</td>
+<td>Show the 6-event structure with pre-populated events. Event switching works. Content is sample data.</td>
+</tr>
+<tr>
+<td>AI Vendor Outreach Engine</td>
+<td>Show the outreach draft UI with a pre-generated sample. Style profile setup screen visible but optional for demo.</td>
+</tr>
+<tr>
+<td>Multi-event budget tracker</td>
+<td>Display a budget dashboard with sample data across events. No live calculation required for demo.</td>
+</tr>
+<tr>
+<td>Guest list segmentation</td>
+<td>Show the master list with per-event tags using sample guests. Import flow is UI-only for demo.</td>
+</tr>
+<tr>
+<td>Couple-planner collaboration dashboard</td>
+<td>Show both views with sample data. Activity feed is static.</td>
+</tr>
+<tr>
+<td>Email reminders (obligation deadlines)</td>
+<td>Not needed for demo. Log the obligation; skip SendGrid delivery.</td>
+</tr>
+<tr>
+<td>Cultural background interview</td>
+<td>Simplified: show 3-question setup flow. Custom event generation can use a fixed sample output.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3>3.4 V1 Product Launch — Full Feature Set (July 2026)</h3>
+<p>All features mocked in the capstone prototype must be fully functional by the V1 launch.</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>V1 Requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AI Contract Intelligence Suite</td>
+<td>All sub-features fully functional. Style profiles active for response drafting.</td>
+</tr>
+<tr>
+<td>Multi-event wedding structure</td>
+<td>Full cultural background interview. LLM-generated event structure. All downstream cascade logic.</td>
+</tr>
+<tr>
+<td>AI Vendor Outreach Engine</td>
+<td>Style profile from 3-5 sample emails. Edit-and-learn loop. Outreach tracker with response status.</td>
+</tr>
+<tr>
+<td>Multi-event budget tracker</td>
+<td>Live budget with pre-suggested allocations, variance alerts, AI reallocation advisor, payment calendar.</td>
+</tr>
+<tr>
+<td>Guest list segmentation</td>
+<td>Natural language import, OCR photo import, fuzzy duplicate detection, per-event RSVP tracking.</td>
+</tr>
+<tr>
+<td>Couple-planner dashboard</td>
+<td>Full planner command center, clean couple status view, parent read-only access, activity feed.</td>
+</tr>
+<tr>
+<td>Email reminders</td>
+<td>SendGrid live. 14-day, 7-day, 1-day obligation reminders automated.</td>
+</tr>
+<tr>
+<td>Paid subscriptions</td>
+<td>All 4 tiers live. Payment processing active.</td>
+</tr>
+<tr>
+<td>GDPR/CCPA compliance</td>
+<td>Data export and deletion flows implemented.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3>3.5 Out of Scope — V1 (carried from v1.0)</h3>
+<p>The following are intentionally excluded from V1 to maintain focus.</p>
+<table>
+<thead>
+<tr>
+<th>Out of Scope</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Meal / calorie tracking</td>
+<td>Not relevant to wedding planning</td>
+</tr>
+<tr>
+<td>In-app invitation sending and RSVP hosting</td>
+<td>Guest segmentation logic demonstrated; delivery layer is V2</td>
+</tr>
+<tr>
+<td>Vendor marketplace / vendor directory</td>
+<td>Cold-start problem — curated directory is post-launch</td>
+</tr>
+<tr>
+<td>Automated calendar / scheduling integration</td>
+<td>Can be mocked for demo; full integration is V2</td>
+</tr>
+<tr>
+<td>Payment processing for vendor bookings</td>
+<td>Marketplace transaction layer is post-launch</td>
+</tr>
+<tr>
+<td>Multilingual support (Hindi, Punjabi, Gujarati)</td>
+<td>High value but significant complexity — V2 priority</td>
+</tr>
+<tr>
+<td>Mobile native app (iOS / Android)</td>
+<td>V1 is mobile-responsive web; native apps are post-launch</td>
+</tr>
+<tr>
+<td>Post-wedding features (thank-you notes, photo albums)</td>
+<td>Outside the planning journey scope for V1</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>4. Goals &amp; Success Metrics ✦ EXPANDED IN V2.0</h2>
+<h3>4.1 Product Goals (unchanged from v1.0)</h3>
+<ul>
+<li>Become the default wedding planning platform for Indian diaspora couples and planners in North America</li>
+<li>Demonstrate that cultural intelligence + LLM-powered automation creates a defensible, compounding competitive moat</li>
+<li>Prove willingness to pay at both the planner tier ($200-400/month) and couple tier ($30-60/month)</li>
+<li>Generate strong word-of-mouth referrals within the tightly networked South Asian community</li>
+</ul>
+<h3>4.2 North Star Metric ✦ NEW</h3>
+<p><strong>Total contracts reviewed per month</strong> — the single best proxy for value delivered. A contract reviewed means a planner or couple used the AI feature that sits at the core of the product, received output they acted on, and trusted the platform with a high-stakes document. Growth in this metric confirms both adoption and trust.</p>
+<p>Secondary proxy: <strong>Active planner accounts</strong> (tracks the highest-LTV acquisition channel and distribution multiplier).</p>
+<hr />
+<h3>4.3 Capstone Success Criteria ✦ NEW</h3>
+<p>These criteria define success for Phase 0 (April 2026). They are distinct from product launch metrics.</p>
+<p><strong>Demo Quality:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Target</th>
+<th>How to Measure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>End-to-end flow completeness</td>
+<td>Contract upload → summary → flag expansion → response draft → obligation extraction works without error in live demo</td>
+<td>Manual test with 3 real vendor contracts before demo day</td>
+</tr>
+<tr>
+<td>Contract summary generation time</td>
+<td>&lt; 60 seconds for contracts up to 25 pages</td>
+<td>Timed test on demo contracts</td>
+</tr>
+<tr>
+<td>Response draft generation time</td>
+<td>&lt; 10 seconds from clicking 'Draft Response'</td>
+<td>Timed test across 5 flag scenarios</td>
+</tr>
+<tr>
+<td>Summary accuracy on test contracts</td>
+<td>&gt; 90% of key sections correctly identified and extracted</td>
+<td>Human review of AI output against 5 real contracts</td>
+</tr>
+</tbody>
+</table>
+<p><strong>User Validation:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Target</th>
+<th>How to Measure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>User interviews completed</td>
+<td>≥ 3 Indian wedding planners + 3 diaspora couples</td>
+<td>Interview log</td>
+</tr>
+<tr>
+<td>"Would use this tool" score</td>
+<td>≥ 4.0 / 5.0 average across all 6 interviews</td>
+<td>Post-interview survey</td>
+</tr>
+<tr>
+<td>"AI summary was accurate enough to trust" score</td>
+<td>≥ 4.0 / 5.0 from planner interviews</td>
+<td>Post-demo feedback form</td>
+</tr>
+<tr>
+<td>Identified at least one non-obvious friction point</td>
+<td>Yes — from interview synthesis</td>
+<td>Interview synthesis doc</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Capstone Presentation:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Product Faculty presentation score</td>
+<td>≥ 80 / 100</td>
+</tr>
+<tr>
+<td>Live demo completes without fallback to screenshots</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>PRD and supporting documents delivered on time</td>
+<td>April 25, 2026</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3>4.4 V1 Launch Success Metrics ✦ NEW</h3>
+<p>These are early-signal metrics for months 1-3 post-launch (July–September 2026), before the 6-month targets become relevant.</p>
+<p><strong>Acquisition (Month 1-3):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Planner accounts acquired</td>
+<td>≥ 15 by end of Month 1</td>
+</tr>
+<tr>
+<td>Couple accounts acquired (planner-referred)</td>
+<td>≥ 30 by end of Month 2</td>
+</tr>
+<tr>
+<td>Free trial to paid conversion rate (planner tier)</td>
+<td>≥ 40%</td>
+</tr>
+<tr>
+<td>Cost per planner acquisition (direct outreach)</td>
+<td>&lt; $200 CAC</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Activation:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Contract review completed within first session</td>
+<td>&gt; 60% of new planner signups</td>
+</tr>
+<tr>
+<td>Wedding setup completed within 48 hours of signup</td>
+<td>&gt; 70% of new accounts</td>
+</tr>
+<tr>
+<td>Couple invited to dashboard within first week</td>
+<td>&gt; 80% of planner-created weddings</td>
+</tr>
+</tbody>
+</table>
+<p><strong>AI Quality (user-reported):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Contract summary star rating (1-5)</td>
+<td>≥ 4.2 average</td>
+</tr>
+<tr>
+<td>"Flag was helpful and accurate" thumbs up rate</td>
+<td>≥ 75% of flags rated</td>
+</tr>
+<tr>
+<td>Support tickets citing AI inaccuracy</td>
+<td>&lt; 5% of total contract reviews</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3>4.5 6-Month Post-Launch Success Metrics (expanded from v1.0)</h3>
+<p><strong>Acquisition:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Target (Month 6)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Active planner accounts</td>
+<td>50</td>
+</tr>
+<tr>
+<td>Active couple accounts</td>
+<td>200</td>
+</tr>
+<tr>
+<td>% of signups from referrals</td>
+<td>&gt; 40%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Engagement:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Target (Month 6)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Contracts reviewed per active planner per month</td>
+<td>&gt; 5</td>
+</tr>
+<tr>
+<td>Contract Intelligence used within first session</td>
+<td>&gt; 60% of new users</td>
+</tr>
+<tr>
+<td>Monthly active rate (planners)</td>
+<td>&gt; 80%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Retention:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Target (Month 6)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Planner 30-day retention</td>
+<td>&gt; 85%</td>
+</tr>
+<tr>
+<td>Planner 90-day retention</td>
+<td>&gt; 70%</td>
+</tr>
+<tr>
+<td>Couple 60-day retention</td>
+<td>&gt; 55%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Revenue:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Target (Month 6)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Monthly Recurring Revenue (MRR)</td>
+<td>$17,750</td>
+</tr>
+<tr>
+<td>Annual Run Rate</td>
+<td>~$213,000</td>
+</tr>
+<tr>
+<td>Planner tier % of MRR</td>
+<td>~62%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Quality &amp; Trust:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Target (Month 6)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Net Promoter Score (NPS)</td>
+<td>&gt; 50</td>
+</tr>
+<tr>
+<td>Contract summary accuracy vs. human review</td>
+<td>&gt; 90%</td>
+</tr>
+<tr>
+<td>Contract risk score alignment with human assessment</td>
+<td>&gt; 85%</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3>4.6 Leading vs. Lagging Indicator Map ✦ NEW</h3>
+<table>
+<thead>
+<tr>
+<th>Leading Indicator</th>
+<th>Lagging Indicator It Predicts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Free trial to paid conversion rate</td>
+<td>MRR growth</td>
+</tr>
+<tr>
+<td>Contract reviews in first session</td>
+<td>30-day retention</td>
+</tr>
+<tr>
+<td>Planner invites couple to dashboard</td>
+<td>Couple account activation</td>
+</tr>
+<tr>
+<td>AI quality rating per summary</td>
+<td>NPS score</td>
+</tr>
+<tr>
+<td>Referral links clicked per planner</td>
+<td>% signups from referrals</td>
+</tr>
+<tr>
+<td>Style profile setup completion</td>
+<td>Vendor outreach feature adoption</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>5. Target Users &amp; Personas (unchanged from v1.0)</h2>
+<h3>5.1 Persona 1 — The Indian Wedding Planner (Primary)</h3>
+<p>Strategic role: Primary buyer, primary user, and most powerful distribution channel. One planner acquisition unlocks 10-30 couple relationships per year.</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Name</td>
+<td>Priya — Professional Indian Wedding Planner, Greater Toronto Area</td>
+</tr>
+<tr>
+<td>Experience</td>
+<td>8+ years planning South Asian weddings. Manages 15-20 weddings per year.</td>
+</tr>
+<tr>
+<td>Current tools</td>
+<td>Aisle Planner, Google Sheets, WhatsApp, Gmail</td>
+</tr>
+<tr>
+<td>Primary goal</td>
+<td>Manage complex multi-event weddings more efficiently and grow her business without adding headcount</td>
+</tr>
+<tr>
+<td>Key pain</td>
+<td>Every Indian wedding she manages is harder than it needs to be because no tool understands the structure. She spends hours on manual, repetitive tasks that should be automated.</td>
+</tr>
+<tr>
+<td>Willingness to pay</td>
+<td>High — she is running a business and understands the ROI of tools that save time and improve client satisfaction</td>
+</tr>
+</tbody>
+</table>
+<h3>5.2 Persona 2 — The Self-Managing Diaspora Couple (Secondary)</h3>
+<p>Strategic role: Primary volume user and long-term growth engine. Strong referral potential within the tightly networked South Asian community.</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Names</td>
+<td>Neha &amp; Arjun — Engaged diaspora couple, dual-income professionals, New York metro area</td>
+</tr>
+<tr>
+<td>Wedding</td>
+<td>5-event Indian wedding, 280 guests, 14 months out, self-managing without a full-service planner</td>
+</tr>
+<tr>
+<td>Current tools</td>
+<td>The Knot (partially), Google Sheets, WhatsApp group with both families</td>
+</tr>
+<tr>
+<td>Primary goal</td>
+<td>Stay in control of the planning process without drowning in it — and feel confident they haven't missed anything important</td>
+</tr>
+<tr>
+<td>Key pain</td>
+<td>Managing a $250,000 wedding across 5 events with 20+ vendors while holding full-time jobs. Reviewing contracts they don't understand. Guest lists that change constantly. A budget that shifts every week.</td>
+</tr>
+<tr>
+<td>Willingness to pay</td>
+<td>Moderate to high — they are already spending $250,000 on the wedding. A $50/month tool that protects that investment is an easy decision.</td>
+</tr>
+</tbody>
+</table>
+<h3>5.3 Secondary Users</h3>
+<ul>
+<li><strong>Couple working with a planner</strong> — accesses Shaadi AI through the planner's workspace. Uses the couple dashboard for visibility. Does not drive coordination.</li>
+<li><strong>Parents / family decision-makers</strong> — read-only access to budget summaries and event status. No direct purchase intent but significant influence on couple's adoption decision.</li>
+</ul>
+<hr />
+<h2>6. Competitive Landscape (unchanged from v1.0)</h2>
+<h3>6.1 Competitor Summary</h3>
+<table>
+<thead>
+<tr>
+<th>Competitor</th>
+<th>Multi-Event Structure</th>
+<th>Indian Cultural Intelligence</th>
+<th>AI Contract Review</th>
+<th>NA Diaspora Focus</th>
+<th>Self-Serve</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The Knot</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>Partial</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Zola</td>
+<td>Partial</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Aisle Planner</td>
+<td>Partial</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>BollyWeds</td>
+<td>✓</td>
+<td>✓</td>
+<td>✗</td>
+<td>✓</td>
+<td>Agency only</td>
+</tr>
+<tr>
+<td>WeddAI</td>
+<td>Partial</td>
+<td>Partial</td>
+<td>✗</td>
+<td>India only</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><strong>Shaadi AI</strong></td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+</tr>
+</tbody>
+</table>
+<h3>6.2 Key Differentiators</h3>
+<ol>
+<li>Built natively for Indian weddings — not adapted from a Western template</li>
+<li>Cultural intelligence that compounds as a moat — the platform understands event-specific vendor categories, ritual sequencing, and diaspora logistics</li>
+<li>AI Contract Intelligence — no competitor offers contract review for wedding vendors. A genuine white space.</li>
+<li>First self-serve platform for the North American Indian diaspora — BollyWeds requires hiring them as an agency</li>
+<li>Dual-user model — couple and planner in one platform with appropriate permission levels</li>
+</ol>
+<hr />
+<h2>7. Product Overview (unchanged from v1.0)</h2>
+<h3>7.1 Product Vision</h3>
+<p><strong>Vision:</strong> Shaadi AI is the coordination layer that makes planning a multi-event Indian wedding feel, for the first time, like something a couple can actually be in control of.</p>
+<h3>7.2 Product Model</h3>
+<p>Shaadi AI is a product-led business with a sales-assisted motion for the planner tier in the early stages. The product delivers value independently through software — it is not a service business. In the early go-to-market phase, the first 10-20 planners will be acquired through direct outreach and white-glove onboarding. As brand credibility builds within the South Asian wedding community, the model moves toward a more purely self-serve acquisition motion for couples.</p>
+<h3>7.3 Platform Architecture</h3>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Foundation</td>
+<td>Multi-event Indian wedding structure — the platform is pre-configured with the standard event sequence (Mehndi, Haldi, Sangeet, Baraat, Ceremony, Reception) and customizable for regional and religious variation</td>
+</tr>
+<tr>
+<td>AI Layer</td>
+<td>LLM-powered features including Contract Intelligence, vendor outreach drafting, budget advisory, and guest list parsing — built on Claude API</td>
+</tr>
+<tr>
+<td>Coordination Layer</td>
+<td>Multi-event budget tracker, vendor management, guest segmentation, and timeline management across all events simultaneously</td>
+</tr>
+<tr>
+<td>Collaboration Layer</td>
+<td>Dual-user dashboard giving planners a coordination command center and couples real-time visibility — with read-only access for parents</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>8. Feature Requirements (unchanged from v1.0)</h2>
+<blockquote>
+<p>Scope note: Section 8.1 covers the primary AI feature (capstone focus). Sections 8.2-8.6 cover supporting platform features. See Section 3 for which of these are must-build vs. mock for the capstone prototype.</p>
+</blockquote>
+<h3>8.1 AI Contract Intelligence Suite ✦ PRIMARY FEATURE</h3>
+<p><strong>Why this feature:</strong> No competitor offers AI contract review for wedding vendors. It is a genuine white space, serves both primary personas powerfully, and is the trust-building entry point to the full AI layer of the product.</p>
+<h4>8.1.1 Plain-Language Contract Summary</h4>
+<p><strong>User story:</strong> As a wedding planner or couple, I want to upload a vendor contract and receive a plain-language summary of key terms so that I can understand what I am agreeing to without spending 45 minutes reading legal language.</p>
+<p><strong>Functional requirements:</strong>
+- User uploads a vendor contract in PDF format (max 25MB)
+- System processes the document and returns a structured summary within 60 seconds
+- Summary includes: payment schedule and deposit amount, cancellation policy and refund terms, what is included and explicitly excluded, overtime rates and conditions, exclusivity clauses, liability limitations, and force majeure terms
+- Summary is presented in plain language at an 8th-grade reading level
+- Summary is organized by section with clear headers
+- User can copy, download, or share the summary directly from the interface</p>
+<p><strong>Acceptance criteria:</strong>
+- Summary is generated within 60 seconds of upload for contracts up to 25 pages
+- All standard contract sections are correctly identified and extracted with &gt;90% accuracy
+- Plain-language translation passes readability test at or below 8th-grade level
+- Feature works across varied PDF formats — professionally formatted and informally structured</p>
+<h4>8.1.2 Traffic Light Clause Flagging</h4>
+<p><strong>User story:</strong> As a couple reviewing a vendor contract, I want each clause rated as standard, worth reviewing, or unusual so that I know where to focus my attention and what to be concerned about.</p>
+<p><strong>Functional requirements:</strong>
+- Each clause in the summary is tagged with a traffic light rating: Green (standard for this vendor category), Yellow (review recommended — unusual but not alarming), Red (high-risk or significantly unusual)
+- Each flag includes a one-paragraph explanation of why the clause received that rating
+- Yellow and Red flags include a benchmark note: what is typical for this vendor type in the Indian wedding market
+- User can click any flag to expand a detailed explanation
+- A contract risk score (Low / Medium / High) is calculated from the aggregate of flags and displayed prominently at the top of the summary</p>
+<p><strong>Acceptance criteria:</strong>
+- Traffic light ratings are consistent with Indian wedding vendor market norms for the top 5 vendor categories (venue, photographer, caterer, décor, entertainment)
+- Each Red flag includes a specific, actionable explanation — not generic legal boilerplate
+- Contract risk score accurately reflects the overall risk profile of the contract in &gt;85% of test cases</p>
+<h4>8.1.3 One-Click Response Drafting</h4>
+<p><strong>User story:</strong> As a couple or planner who has received a flagged contract clause, I want to generate a professional response email to the vendor addressing the concern so that I can negotiate effectively without knowing how to write contract negotiation language.</p>
+<p><strong>Functional requirements:</strong>
+- For any Yellow or Red flagged clause, user can click 'Draft Response' to generate a vendor email
+- The email addresses the specific flagged clause, explains the concern in professional but accessible language, and includes a suggested resolution or alternative wording
+- The draft is pre-populated with the planner's voice profile (if set up) or defaults to a professional neutral tone
+- User can edit the draft before sending or copy it to their email client
+- System tracks whether a response was sent and logs the vendor's reply when pasted back in</p>
+<p><strong>Acceptance criteria:</strong>
+- Draft response is generated within 10 seconds of clicking 'Draft Response'
+- Email addresses the specific clause by name — not a generic contract negotiation template
+- Planner voice profile, if set, is reflected in tone and vocabulary of the draft</p>
+<h4>8.1.4 Post-Signing Obligation Tracker</h4>
+<p><strong>User story:</strong> As a couple who has signed multiple vendor contracts, I want all payment deadlines, confirmation calls, and submission requirements extracted and tracked automatically so that I never miss an obligation buried in a contract I signed three months ago.</p>
+<p><strong>Functional requirements:</strong>
+- When a contract is marked as signed, the system extracts all time-bound obligations — payment dates, deposit amounts, confirmation deadlines, final headcount submission dates
+- Extracted obligations are added to a Contract Obligations dashboard visible to both the couple and the planner
+- Automated reminders are sent 14 days, 7 days, and 1 day before each obligation deadline
+- Obligations are linked to the budget tracker — payment deadlines automatically appear in the budget calendar
+- User can mark obligations as complete and add notes</p>
+<p><strong>Acceptance criteria:</strong>
+- All payment dates and amounts are extracted correctly from contracts with &gt;95% accuracy
+- Reminders are sent at the correct intervals without manual setup
+- Obligation tracker is visible to both planner and couple in their respective dashboards</p>
+<hr />
+<h3>8.2 Multi-Event Wedding Structure</h3>
+<p><strong>Purpose:</strong> The foundation that makes every other feature culturally intelligent. Structures the entire product around the reality of an Indian wedding rather than a Western one.</p>
+<ul>
+<li>Platform is pre-configured with the standard Indian wedding event sequence: Mehndi, Haldi, Sangeet, Baraat, Wedding Ceremony, Reception</li>
+<li>Each event has its own vendor checklist, budget line, timeline, guest subset, and task list</li>
+<li>Events can be added, removed, renamed, or reordered without breaking downstream data</li>
+<li>Regional and religious variations are supported through a cultural background interview at setup — the LLM generates a custom event structure based on the couple's background</li>
+<li>A blend mode allows interfaith or inter-regional couples to merge event structures from both traditions</li>
+<li>All changes to the event structure cascade automatically through budget, vendor tracker, timeline, and guest list</li>
+</ul>
+<h3>8.3 AI Vendor Outreach Engine</h3>
+<p><strong>Purpose:</strong> Eliminates hours of manual email writing per wedding by generating personalized, voice-matched vendor outreach for each event and vendor category.</p>
+<ul>
+<li>Planner uploads 3-5 sample emails to create a style profile — the LLM extracts tone, vocabulary, and framing preferences</li>
+<li>For each vendor outreach request, the system generates a personalized draft tailored to the event type, vendor category, guest count, and requirements</li>
+<li>Tone controls allow one-click adjustment (formal / conversational / warm) before sending</li>
+<li>Vendor-type awareness adjusts formality automatically — more formal for luxury venues, more casual for entertainment vendors</li>
+<li>Edit-and-learn loop: edits made to drafts update the style profile over time</li>
+<li>Outreach tracker shows response status per vendor: pending, responded, shortlisted, booked</li>
+</ul>
+<h3>8.4 Multi-Event Budget Tracker</h3>
+<p><strong>Purpose:</strong> Replaces six separate event spreadsheets with a single live budget view that updates dynamically across all events as quotes come in.</p>
+<ul>
+<li>Unified budget view across all events, broken down by event and by vendor category</li>
+<li>Budget allocations are pre-suggested based on the couple's total budget and typical Indian wedding spend ratios — user-adjustable</li>
+<li>Real-time updates as vendor quotes are logged — no manual reconciliation</li>
+<li>Variance alerts flag when a line item is approaching or exceeding its allocation</li>
+<li>AI budget advisor generates ranked reallocation suggestions weighted against the couple's stated priorities</li>
+<li>Shared view between couple and planner — planner can control which updates are immediately visible to the couple</li>
+<li>Read-only budget summary available to parents with access</li>
+<li>Payment calendar shows all upcoming payment obligations across all vendors</li>
+</ul>
+<h3>8.5 Guest List With Per-Event Segmentation</h3>
+<p><strong>Purpose:</strong> Manages one master guest list with intelligent per-event segmentation — eliminating the logic errors and manual effort of managing 400 guests across 4-6 events.</p>
+<ul>
+<li>Single master guest list with per-event tagging — each guest is assigned to the events they are invited to</li>
+<li>Natural language guest import — paste any format (WhatsApp message, spreadsheet, typed list) and the LLM extracts structured records</li>
+<li>Photo import of handwritten lists via OCR extraction</li>
+<li>Fuzzy duplicate detection flags likely duplicates before they are added</li>
+<li>Relationship tagging (bride's family, groom's family, mutual friends, colleagues) drives AI-suggested event assignments in bulk</li>
+<li>Per-event RSVP tracking with automated follow-up drafting for non-respondents</li>
+<li>Per-event headcount export for venue and catering coordination</li>
+</ul>
+<h3>8.6 Couple-Planner Collaboration Dashboard</h3>
+<p><strong>Purpose:</strong> Keeps the couple, planner, and family in sync without requiring constant check-in calls or status update emails.</p>
+<ul>
+<li>Planner view: full coordination command center — vendor management, contract tracker, budget controls, timeline, task assignments</li>
+<li>Couple view: clean dashboard showing event status, budget summary, vendor confirmations, and guest counts across all events</li>
+<li>Shared comments and notes on individual tasks, vendors, and budget lines</li>
+<li>Parent access: read-only view of event status and budget summary — no operational access</li>
+<li>Activity feed shows recent changes with timestamps so the couple always knows what has been updated</li>
+<li>Mobile-optimized for all user types — critical for wedding week usage</li>
+</ul>
+<hr />
+<h2>9. Key User Flows (unchanged from v1.0)</h2>
+<h3>9.1 AI Contract Intelligence — Core Flow</h3>
+<p>This is the primary flow for the capstone prototype demonstration.</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>User Action</th>
+<th>System Response</th>
+<th>Outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>User opens vendor profile in the Vendor Tracker</td>
+<td>Vendor detail page loads with contract upload prompt</td>
+<td>User sees clear upload CTA</td>
+</tr>
+<tr>
+<td>2</td>
+<td>User uploads vendor contract PDF</td>
+<td>System confirms upload and begins processing — progress indicator shown</td>
+<td>User knows system is working</td>
+</tr>
+<tr>
+<td>3</td>
+<td>User waits (up to 60 seconds)</td>
+<td>LLM processes contract, generates summary and flags</td>
+<td>Processing complete notification</td>
+</tr>
+<tr>
+<td>4</td>
+<td>User reviews contract summary</td>
+<td>Displays plain-language summary with traffic light flags and contract risk score</td>
+<td>User understands key terms in minutes</td>
+</tr>
+<tr>
+<td>5</td>
+<td>User clicks a Yellow or Red flag to expand</td>
+<td>Detailed explanation shown with industry norm benchmark</td>
+<td>User understands why clause is flagged</td>
+</tr>
+<tr>
+<td>6</td>
+<td>User clicks 'Draft Response' on a flagged clause</td>
+<td>LLM generates professional vendor email addressing the specific clause with a negotiation suggestion</td>
+<td>User has a ready-to-send email in 10 seconds</td>
+</tr>
+<tr>
+<td>7</td>
+<td>User edits and sends the email (or copies to their email client)</td>
+<td>System logs that a response was sent and prompts for vendor reply</td>
+<td>Negotiation is tracked in the system</td>
+</tr>
+<tr>
+<td>8</td>
+<td>User marks contract as signed</td>
+<td>System extracts obligations and populates the Obligation Tracker with payment dates and deadlines</td>
+<td>All future obligations are automatically tracked</td>
+</tr>
+</tbody>
+</table>
+<h3>9.2 New Wedding Setup Flow</h3>
+<ol>
+<li>Planner or couple creates a new wedding account</li>
+<li>Cultural background interview — LLM asks about regional background, religious tradition, family customs</li>
+<li>Custom event structure is generated and displayed for review and adjustment</li>
+<li>Budget is entered and auto-allocated across events based on typical Indian wedding spend ratios</li>
+<li>Couple is invited to the collaboration dashboard</li>
+<li>Planning framework (timeline, vendor checklist, task list) is pre-populated across all events</li>
+</ol>
+<h3>9.3 Vendor Outreach Flow</h3>
+<ol>
+<li>Planner selects an event and a vendor category</li>
+<li>Planner inputs vendor name(s) and any specific requirements</li>
+<li>AI generates personalized outreach drafts in the planner's voice</li>
+<li>Planner reviews, edits if needed, and sends</li>
+<li>System tracks response status and flags follow-ups</li>
+<li>Quotes are logged and budget tracker updates automatically</li>
+</ol>
+<hr />
+<h2>10. Non-Functional Requirements (unchanged from v1.0)</h2>
+<h3>10.1 Performance</h3>
+<ul>
+<li>Contract summary generated within 60 seconds of PDF upload for documents up to 25 pages</li>
+<li>Vendor outreach drafts generated within 10 seconds of request</li>
+<li>Budget dashboard loads within 2 seconds on a standard broadband connection</li>
+<li>Platform supports concurrent usage by planner and couple on the same wedding without data conflicts</li>
+</ul>
+<h3>10.2 Reliability</h3>
+<ul>
+<li>99.5% uptime SLA — wedding planning is time-sensitive and platform unavailability directly impacts user trust</li>
+<li>All user data is backed up daily with point-in-time recovery</li>
+<li>Contract PDFs and summaries are stored securely and retrievable for the duration of the subscription</li>
+</ul>
+<h3>10.3 Security &amp; Privacy</h3>
+<ul>
+<li>All data encrypted in transit (TLS 1.3) and at rest (AES-256)</li>
+<li>Vendor contract PDFs contain sensitive financial and legal information — access is restricted to the planner and couple for that specific wedding</li>
+<li>Parent read-only access does not expose vendor contract details — budget summaries only</li>
+<li>GDPR and CCPA compliant data handling — users can export and delete their data</li>
+<li>LLM API calls do not store contract content beyond the processing session</li>
+</ul>
+<h3>10.4 Accessibility</h3>
+<ul>
+<li>WCAG 2.1 AA compliance across all user-facing interfaces</li>
+<li>Mobile-responsive design for all features — critical for wedding week usage</li>
+<li>Minimum font size of 16px for body text across all views</li>
+</ul>
+<h3>10.5 AI Quality</h3>
+<ul>
+<li>Contract summaries must achieve &gt;90% accuracy on key term extraction (validated against human review)</li>
+<li>Traffic light flags must align with Indian wedding vendor market norms for top 5 vendor categories</li>
+<li>AI outputs must include a confidence or completeness indicator so users know when to double-check</li>
+<li>The system must gracefully handle contracts that are ambiguous, poorly formatted, or non-standard — flagging uncertainty rather than generating confident but incorrect output</li>
+</ul>
+<hr />
+<h2>11. Technology Stack (unchanged from v1.0)</h2>
+<h3>11.1 Recommended Stack (No-Code / Low-Code)</h3>
+<blockquote>
+<p><strong>Constraint:</strong> The capstone prototype must be buildable within a no-code/low-code stack by April 25, 2026, with LLM API integration for the AI Contract Intelligence Suite.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Tool</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Frontend / App</td>
+<td>Bubble.io</td>
+<td>Web app builder for all user-facing interfaces — planner dashboard, couple dashboard, contract upload flow</td>
+</tr>
+<tr>
+<td>AI / LLM</td>
+<td>Claude API (claude-sonnet-4-6)</td>
+<td>Powers contract summarization, flag generation, response drafting, outreach generation, and cultural setup interview</td>
+</tr>
+<tr>
+<td>Automation / Workflows</td>
+<td>Make (formerly Integromat)</td>
+<td>Bridges Bubble with Claude API — handles PDF upload, API calls, and response routing back to the UI</td>
+</tr>
+<tr>
+<td>Database</td>
+<td>Bubble built-in database</td>
+<td>Stores weddings, events, vendors, contracts, budgets, guests, and user profiles</td>
+</tr>
+<tr>
+<td>PDF Processing</td>
+<td>PDF.co or similar via Make</td>
+<td>Extracts text from uploaded contract PDFs before passing to Claude API</td>
+</tr>
+<tr>
+<td>Authentication</td>
+<td>Bubble built-in auth</td>
+<td>User accounts, role-based access (planner / couple / parent)</td>
+</tr>
+<tr>
+<td>Email</td>
+<td>SendGrid via Make</td>
+<td>Obligation reminders, RSVP follow-ups, and system notifications</td>
+</tr>
+</tbody>
+</table>
+<h3>11.2 AI Architecture — Contract Intelligence</h3>
+<p>The Contract Intelligence Suite uses a multi-step LLM pipeline:</p>
+<ol>
+<li><strong>Step 1 — Text extraction:</strong> PDF.co extracts raw text from the uploaded contract PDF</li>
+<li><strong>Step 2 — Structured summarization:</strong> Claude API receives the extracted text with a structured prompt instructing it to identify and extract key contract sections (payment, cancellation, inclusions, exclusions, overtime, exclusivity, liability)</li>
+<li><strong>Step 3 — Flag generation:</strong> A second Claude API call evaluates each extracted clause against a system prompt containing Indian wedding vendor contract norms and generates traffic light ratings with explanations</li>
+<li><strong>Step 4 — Risk scoring:</strong> Claude aggregates the flags and generates an overall contract risk score (Low / Medium / High) with a brief plain-language rationale</li>
+<li><strong>Step 5 — Response drafting:</strong> When the user requests a draft response, Claude receives the flagged clause, the vendor category, and the planner's style profile and generates a targeted negotiation email</li>
+<li><strong>Step 6 — Obligation extraction:</strong> Claude extracts all time-bound obligations from the signed contract and returns them in a structured JSON format that populates the Obligation Tracker</li>
+</ol>
+<hr />
+<h2>12. Monetization Model (unchanged from v1.0)</h2>
+<h3>12.1 Subscription Tiers</h3>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Target User</th>
+<th>Price</th>
+<th>Key Features</th>
+<th>Value Prop</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Couple — Standard</td>
+<td>Self-managing couple</td>
+<td>$39/month</td>
+<td>All platform features, AI Contract Intelligence (10 contracts/month), budget tracker, guest management</td>
+<td>Full control of a $250K wedding for less than $500 total</td>
+</tr>
+<tr>
+<td>Couple — Premium</td>
+<td>Couple with high complexity</td>
+<td>$59/month</td>
+<td>All Standard features + unlimited contract reviews, priority AI processing, parent access</td>
+<td>Unlimited AI support for the most complex weddings</td>
+</tr>
+<tr>
+<td>Planner — Professional</td>
+<td>Wedding planner (single user)</td>
+<td>$199/month</td>
+<td>Unlimited weddings, all AI features, style profile, collaboration dashboard, obligation tracker</td>
+<td>Replace Aisle Planner + Sheets + WhatsApp with one culturally intelligent platform</td>
+</tr>
+<tr>
+<td>Planner — Agency</td>
+<td>Planning firm with multiple planners</td>
+<td>$349/month</td>
+<td>All Professional features + multi-planner access, team collaboration, analytics dashboard</td>
+<td>Business-grade platform for growing agencies</td>
+</tr>
+</tbody>
+</table>
+<h3>12.2 Revenue Projections</h3>
+<p>Conservative 6-month post-launch scenario based on planner-led go-to-market:
+- 50 planner accounts at blended $220/month average = $11,000 MRR
+- 150 couple accounts at blended $45/month average = $6,750 MRR
+- <strong>Total MRR at Month 6: ~$17,750</strong>
+- <strong>Annual Run Rate at Month 6: ~$213,000</strong></p>
+<p>The planner tier generates ~62% of revenue from ~25% of accounts — confirming the planner as the highest-LTV customer segment.</p>
+<h3>12.3 Future Revenue Streams</h3>
+<ul>
+<li>Vendor marketplace transaction fee (V2) — commission on bookings made through Shaadi AI's curated vendor directory</li>
+<li>Vendor listing subscription — South Asian wedding vendors pay for premium placement and profile visibility</li>
+<li>Premium AI credits — usage-based pricing for high-volume contract reviews above plan limits</li>
+</ul>
+<hr />
+<h2>13. Go-To-Market Strategy (unchanged from v1.0)</h2>
+<h3>13.1 Beachhead: Seed Through Planners</h3>
+<p>The fastest path to initial traction is through Indian wedding planners in the top 5 South Asian diaspora metros: Greater Toronto, New York metro, Bay Area, Chicago, and Houston. A single planner using Shaadi AI exposes the product to every couple they work with and every vendor in their network.</p>
+<ul>
+<li>Direct outreach to 50 Indian wedding planners in target cities — offer free 3-month trial in exchange for feedback</li>
+<li>Attend South Asian wedding industry events (South Asian Bridal Show, Desi Bridal Bazaar) for direct relationship-building</li>
+<li>Partner with South Asian wedding vendor associations and planner networks</li>
+<li>White-glove onboarding for first 20 planners — including migration support from Aisle Planner</li>
+</ul>
+<h3>13.2 Couple Acquisition</h3>
+<ul>
+<li>Planner referral program — planners invite couples to the platform, couples see Shaadi AI branding throughout their planning journey</li>
+<li>South Asian community channels — diaspora Facebook groups, Reddit communities (r/SouthAsianWeddings), Instagram targeting</li>
+<li>SEO content strategy targeting high-intent searches: 'Indian wedding planner Toronto', 'South Asian wedding budget template', 'Indian wedding contract review'</li>
+<li>Influencer partnerships with South Asian wedding content creators on Instagram and YouTube</li>
+</ul>
+<h3>13.3 Launch Timeline</h3>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Timeline</th>
+<th>Milestones</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 — Capstone</td>
+<td>March–April 2026</td>
+<td>Working prototype of AI Contract Intelligence Suite built on Bubble + Claude API. Validated with 3 planners and 3 couples.</td>
+</tr>
+<tr>
+<td>1 — Private Beta</td>
+<td>May–June 2026</td>
+<td>20 planner beta users across 3 cities. Full feature set live. Feedback loop active. Pricing model validated.</td>
+</tr>
+<tr>
+<td>2 — Public Launch</td>
+<td>July 2026</td>
+<td>Public launch with all V1 features. Paid tiers live. Active in Toronto, New York, Bay Area.</td>
+</tr>
+<tr>
+<td>3 — Growth</td>
+<td>Aug–Dec 2026</td>
+<td>Expand to Chicago and Houston. Launch couple-direct acquisition. Begin V2 planning (vendor directory).</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>14. Risks &amp; Mitigations (unchanged from v1.0)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Risk</th>
+<th>Likelihood</th>
+<th>Impact</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>AI contract summary misses a critical clause, eroding user trust</td>
+<td>Medium</td>
+<td>High</td>
+<td>Clear 'verify with a professional' disclaimer on all summaries. Confidence indicator on each extracted clause. Ongoing accuracy testing against human-reviewed contracts.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Planners resist switching from existing tools (Aisle Planner) due to switching costs</td>
+<td>High</td>
+<td>High</td>
+<td>White-glove migration support for first 20 planners. Free 3-month trial. Build import tools for existing Aisle Planner data.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>AI outreach drafts don't sound like the planner — feature not adopted</td>
+<td>Medium</td>
+<td>Medium</td>
+<td>Style profile onboarding is mandatory before first draft. Edit-and-learn loop improves accuracy over time. User feedback button on every draft.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>BollyWeds opens their platform to self-serve users or raises capital for expansion</td>
+<td>Low</td>
+<td>High</td>
+<td>Move quickly to establish market presence and planner relationships before BollyWeds pivots. Cultural intelligence moat and community network effects are defensible.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>LLM API costs exceed projections at scale</td>
+<td>Medium</td>
+<td>Medium</td>
+<td>Usage limits per subscription tier. Optimize prompts for token efficiency. Monitor per-user API cost against subscription revenue monthly.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>AI adoption hesitancy among older planners or traditional families</td>
+<td>Medium</td>
+<td>Low</td>
+<td>Frame AI features as assistant tools, not replacements. Ensure all AI outputs are editable, not auto-applied. Build trust gradually through accurate, useful outputs.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Capstone prototype not buildable within timeline</td>
+<td>Low</td>
+<td>High</td>
+<td>Scope is focused on one end-to-end AI feature (Contract Intelligence) in a no-code stack. All other features can be mocked or simulated for the demo.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>15. Open Questions (unchanged from v1.0)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Question</th>
+<th>Impact / Next Step</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>How will Shaadi AI handle contracts in non-standard or image-based PDF formats where text extraction fails?</td>
+<td>Determines fallback UX for OCR failures. Test with a range of real vendor contracts before launch.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>What is the right level of legal disclaimer for AI contract summaries — and how does it affect user trust?</td>
+<td>Legal review needed. Disclaimer must be visible but not undermine confidence in the feature.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Should the couple tier be sold directly from the start, or only introduced after planner-led adoption is established?</td>
+<td>Go-to-market sequencing decision. Lean toward planner-first in months 1-3, couple-direct from month 4.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>How should Shaadi AI handle cultural variation for non-Hindu South Asian weddings (Muslim, Sikh, Christian) in the initial V1?</td>
+<td>Determines scope of the cultural background interview. Minimum viable: North Indian Hindu + Punjabi Sikh. V1.1: Muslim and South Indian.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>What data is needed to build the Indian wedding contract norm benchmarks that power the traffic light flags?</td>
+<td>Primary research needed: collect and analyze 50+ real South Asian wedding vendor contracts across key categories before launch.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>16. Appendix</h2>
+<h3>16.1 Glossary</h3>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mehndi</td>
+<td>Pre-wedding ceremony where henna is applied to the bride and female guests. Typically held 1-2 days before the wedding.</td>
+</tr>
+<tr>
+<td>Haldi</td>
+<td>Pre-wedding ceremony where turmeric paste is applied to the couple for good luck. Requires an easily cleanable venue.</td>
+</tr>
+<tr>
+<td>Sangeet</td>
+<td>Music and dance celebration, often combined with a Garba night for Gujarati weddings. Typically the evening before the wedding.</td>
+</tr>
+<tr>
+<td>Baraat</td>
+<td>The groom's wedding procession — traditionally on horseback, now often in a decorated car — arriving at the wedding venue with music and dancing.</td>
+</tr>
+<tr>
+<td>Mandap</td>
+<td>The ceremonial canopy or arch under which Hindu wedding vows are exchanged.</td>
+</tr>
+<tr>
+<td>Saat Phere</td>
+<td>The seven vows taken by the couple around the sacred fire in a Hindu wedding ceremony.</td>
+</tr>
+<tr>
+<td>Pandit</td>
+<td>A Hindu priest who officiates the wedding ceremony.</td>
+</tr>
+<tr>
+<td>Garba</td>
+<td>A traditional Gujarati folk dance performed during the Sangeet or a dedicated Garba night.</td>
+</tr>
+<tr>
+<td>NRI / Diaspora</td>
+<td>Non-Resident Indian — Indian nationals or people of Indian origin living outside India, particularly in North America and the UK.</td>
+</tr>
+<tr>
+<td>LLM</td>
+<td>Large Language Model — the AI technology powering Shaadi AI's natural language features (Claude, GPT-4, etc.).</td>
+</tr>
+<tr>
+<td>MRR</td>
+<td>Monthly Recurring Revenue — the predictable monthly revenue from all active subscriptions.</td>
+</tr>
+<tr>
+<td>PLG</td>
+<td>Product-Led Growth — a go-to-market strategy where the product itself drives user acquisition, activation, and retention.</td>
+</tr>
+</tbody>
+</table>
+<h3>16.2 Document History</h3>
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Date</th>
+<th>Author</th>
+<th>Changes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.0</td>
+<td>April 2026</td>
+<td>Varun Nair</td>
+<td>Initial draft — covers full product vision, AI Contract Intelligence Suite as primary feature, competitive landscape, user personas, feature requirements, tech stack, and monetization model</td>
+</tr>
+<tr>
+<td>2.0</td>
+<td>April 2026</td>
+<td>Varun Maryada</td>
+<td>Added Section 3: MVP Scope Definition — separates Capstone Prototype (must-build vs. mock), V1 Launch, and V2+ scope. Expanded Section 4: Goals &amp; Success Metrics — adds North Star Metric, capstone success criteria, V1 launch metrics, leading vs. lagging indicator map. All other sections carried forward from v1.0 without change.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>Last updated: April 2026 | Author: Varun Maryada | Version: 2.0</em></p>
+    </div>
+
+    <div class="footer">
+      Shaadi AI &mdash; Product Requirements Document v2.0 &nbsp;&bull;&nbsp; Confidential &nbsp;&bull;&nbsp; April 2026
+    </div>
+
+  </div>
+</body>
+</html>

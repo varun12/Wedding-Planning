@@ -1,6 +1,27 @@
 # CLAUDE.md — Shaadi AI Project Context
 
-This file contains the full product context for **Shaadi AI**, developed during an AI Product Management capstone project (Product Faculty, April 2026). Use this file to onboard into the project quickly. All key decisions, research, and product definitions are captured here.
+This file contains the full product context for **Shaadi AI**, developed during an AI Product Management capstone project (Product Faculty, June 2026). Use this file to onboard into the project quickly. All key decisions, research, and product definitions are captured here.
+
+## Repository Structure
+
+```
+Wedding-Planning/
+├── CLAUDE.md                  ← this file
+├── README.md
+├── app/                       ← all application code (React + Vite + Supabase)
+│   ├── src/                   ← components, pages, hooks, contexts
+│   ├── supabase/              ← edge functions + migrations
+│   ├── public/
+│   └── package.json
+└── docs/                      ← all PM artifacts (read-only for the app)
+    ├── Design/                ← wireframes, evals, master prompts, use cases
+    ├── Development/           ← model selection, RAG architecture, eval methods
+    └── Discovery/             ← PRD v1.0, PRD v2.0
+
+```
+
+**Claude Code writes to `app/` only.** `docs/` is PM reference material — do not modify it when making code changes.
+**Lovable syncs to `app/` only.** Connect Lovable to this GitHub repo (`varun12/Wedding-Planning`) pointing at the `app/` subfolder.
 
 ---
 
@@ -236,21 +257,23 @@ The following are **explicitly excluded** from V1:
 
 | Layer | Tool | Purpose |
 | --- | --- | --- |
-| Frontend / App | Bubble.io | All user-facing interfaces — planner dashboard, couple dashboard, contract upload flow |
+| Frontend / App | React + Vite + TypeScript (built in Lovable) | All user-facing interfaces — planner dashboard, couple dashboard, contract upload flow |
+| UI Components | shadcn/ui + Tailwind CSS | Component library and styling |
 | AI / LLM | Claude API (`claude-sonnet-4-6`) | Contract summarization, flag generation, response drafting, outreach generation, cultural setup interview |
-| Automation | Make (formerly Integromat) | Bridges Bubble with Claude API — handles PDF upload, API calls, response routing |
-| Database | Bubble built-in database | Weddings, events, vendors, contracts, budgets, guests, user profiles |
-| PDF Processing | PDF.co (via Make) | Extracts text from uploaded contract PDFs before passing to Claude API |
-| Authentication | Bubble built-in auth | User accounts, role-based access (planner / couple / parent) |
-| Email | SendGrid (via Make) | Obligation reminders, RSVP follow-ups, system notifications |
+| Backend / Database | Supabase | Postgres database, auth, storage, real-time |
+| Serverless Functions | Supabase Edge Functions (Deno) | Bridges frontend with Claude API — handles contract analysis and response drafting |
+| Authentication | Supabase Auth | User accounts, role-based access (planner / couple / parent) |
+
+> **Note:** Original plan was Bubble.io + Make + PDF.co. Switched to Lovable (React/Vite) + Supabase during capstone build. All PM docs in `docs/` still reference the original stack — the architecture decisions remain valid; only the implementation layer changed.
 
 ### AI Architecture: Contract Intelligence Pipeline
-1. **PDF.co** extracts raw text from uploaded contract PDF
-2. **Claude API** — Structured summarization prompt: extracts payment, cancellation, inclusions, exclusions, overtime, exclusivity, liability
+1. **Frontend** uploads contract PDF to Supabase Storage
+2. **Supabase Edge Function (`analyze-contract`)** — extracts PDF text, calls Claude API with structured summarization prompt
 3. **Claude API** — Flag generation: evaluates each clause against Indian wedding vendor contract norms; generates traffic light ratings + explanations
 4. **Claude API** — Risk scoring: aggregates flags into Low/Medium/High risk score with plain-language rationale
-5. **Claude API** — Response drafting: receives flagged clause + vendor category + planner style profile; generates targeted negotiation email
-6. **Claude API** — Obligation extraction: extracts time-bound obligations from signed contract; returns structured JSON for Obligation Tracker
+5. **Supabase Edge Function (`draft-response`)** — receives flagged clause + vendor category + planner style profile; calls Claude API
+6. **Claude API** — Response drafting: generates targeted negotiation email
+7. **Claude API** — Obligation extraction: extracts time-bound obligations from signed contract; returns structured JSON for Obligation Tracker
 
 ---
 
@@ -287,7 +310,7 @@ The following are **explicitly excluded** from V1:
 - South Asian wedding influencer partnerships (Instagram, YouTube)
 
 **Launch phases:**
-- **Phase 0 (March–April 2026):** Capstone prototype — AI Contract Intelligence Suite on Bubble + Claude API
+- **Phase 0 (March–June 2026):** Capstone prototype — AI Contract Intelligence Suite on React/Supabase + Claude API. Submission deadline: June 15, 2026.
 - **Phase 1 (May–June 2026):** Private beta — 20 planner users, 3 cities, full feature set
 - **Phase 2 (July 2026):** Public launch — paid tiers live, Toronto + New York + Bay Area
 - **Phase 3 (Aug–Dec 2026):** Expand to Chicago + Houston; couple-direct acquisition; V2 planning
@@ -326,7 +349,7 @@ All documents are available in the project outputs:
 | `ShaadiAI_Capstone_Outline.docx` | Structured 5-section outline: problem, users, solution, AI rationale, central claim |
 | `ShaadiAI_Competitive_Research.docx` | Deep competitive analysis of 9 competitors with capability matrix |
 | `ShaadiAI_PRD_v1.0.docx` | Full Product Requirements Document v1.0 — 16 sections covering all product decisions (superseded) |
-| `ShaadiAI_PRD_v2.0.md` ← **DEFAULT PRD** | Full Product Requirements Document v2.0 — adds MVP Scope Definition (Section 3) with explicit Capstone vs. V1 vs. V2 build boundaries, and expanded Success Metrics (Section 4) with North Star, capstone criteria, V1 launch metrics, and leading/lagging indicators |
+| `docs/Discovery/ShaadiAI_PRD_v2.0.md` ← **DEFAULT PRD** | Full Product Requirements Document v2.0 — adds MVP Scope Definition (Section 3) with explicit Capstone vs. V1 vs. V2 build boundaries, and expanded Success Metrics (Section 4) with North Star, capstone criteria, V1 launch metrics, and leading/lagging indicators |
 
 ---
 
