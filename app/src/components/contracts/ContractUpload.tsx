@@ -1,14 +1,36 @@
 import { useState, useCallback } from "react";
-import { Upload, FileText, Loader2, AlertCircle } from "lucide-react";
+import * as pdfjsLib from "pdfjs-dist";
+import { Upload, FileText, Loader2, AlertCircle, ClipboardPaste } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
+import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { ContractAnalysis, Obligation } from "@/pages/Contracts";
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+
+async function extractTextFromPDF(file: File): Promise<string> {
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+  const pages: string[] = [];
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    const pageText = content.items.map((item: any) => item.str).join(" ");
+    pages.push(pageText);
+  }
+  const text = pages.join("\n\n");
+  if (text.trim().length < 200) {
+    throw new Error("SCANNED_PDF");
+  }
+  return text;
+}
 
 const vendorCategories = [
   "Venue", "Photographer", "Videographer", "Caterer",
@@ -23,11 +45,13 @@ interface Props {
 
 export default function ContractUpload({ onAnalysis, onObligations }: Props) {
   const [file, setFile] = useState<File | null>(null);
+  const [pastedText, setPastedText] = useState("");
   const [vendorName, setVendorName] = useState("");
   const [vendorCategory, setVendorCategory] = useState("");
   const [processing, setProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [stage, setStage] = useState("");
+  const [inputMode, setInputMode] = useState<"upload" | "paste">("upload");
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -42,29 +66,47 @@ export default function ContractUpload({ onAnalysis, onObligations }: Props) {
     else toast.error("Please upload a PDF file");
   };
 
+  const isReady = vendorName && vendorCategory && (
+    (inputMode === "upload" && file) ||
+    (inputMode === "paste" && pastedText.trim().length > 100)
+  );
+
   const handleAnalyze = async () => {
-    if (!file || !vendorName || !vendorCategory) {
-      toast.error("Please fill in all fields and upload a contract");
+    if (!isReady) {
+      toast.error("Please fill in all fields and provide contract text");
       return;
     }
 
     setProcessing(true);
     setProgress(10);
-    setStage("Extracting text from PDF...");
 
     try {
-      // Read PDF as text (basic extraction)
-      const text = await file.text();
+      let text = "";
+
+      if (inputMode === "upload" && file) {
+        setStage("Extracting text from PDF...");
+        try {
+          text = await extractTextFromPDF(file);
+        } catch (err: any) {
+          if (err.message === "SCANNED_PDF") {
+            toast.error("This PDF is a scanned image and cannot be read automatically. Please use the 'Paste Text' tab to paste the contract text manually.");
+            setProcessing(false);
+            setProgress(0);
+            setStage("");
+            setInputMode("paste");
+            return;
+          }
+          throw err;
+        }
+      } else {
+        text = pastedText;
+      }
 
       setProgress(30);
       setStage("Analyzing contract with AI...");
 
       const { data, error } = await supabase.functions.invoke("analyze-contract", {
-        body: {
-          contractText: text,
-          vendorName,
-          vendorCategory,
-        },
+        body: { contractText: text, vendorName, vendorCategory },
       });
 
       if (error) throw error;
@@ -73,9 +115,7 @@ export default function ContractUpload({ onAnalysis, onObligations }: Props) {
       setStage("Preparing results...");
 
       onAnalysis(data.analysis);
-      if (data.obligations) {
-        onObligations(data.obligations);
-      }
+      if (data.obligations) onObligations(data.obligations);
 
       setProgress(100);
       setStage("Complete!");
@@ -84,7 +124,6 @@ export default function ContractUpload({ onAnalysis, onObligations }: Props) {
       console.error("Analysis error:", err);
       toast.error("Analysis failed. Using demo data for preview.");
 
-      // Fallback demo data
       const demoAnalysis: ContractAnalysis = {
         vendorName,
         vendorCategory,
@@ -151,40 +190,67 @@ export default function ContractUpload({ onAnalysis, onObligations }: Props) {
           </div>
         </div>
 
-        {/* Upload Area */}
-        <div
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={handleDrop}
-          className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors cursor-pointer ${
-            file ? "border-primary bg-primary/5" : "border-border hover:border-primary/40 hover:bg-muted/50"
-          }`}
-          onClick={() => document.getElementById("file-input")?.click()}
-        >
-          <input
-            id="file-input"
-            type="file"
-            accept=".pdf"
-            onChange={handleFileChange}
-            className="hidden"
-          />
-          {file ? (
-            <div className="flex items-center justify-center gap-3">
-              <FileText className="w-8 h-8 text-primary" />
-              <div className="text-left">
-                <p className="font-medium">{file.name}</p>
-                <p className="text-sm text-muted-foreground">
-                  {(file.size / 1024 / 1024).toFixed(2)} MB
-                </p>
-              </div>
+        {/* Input Mode Tabs */}
+        <Tabs value={inputMode} onValueChange={(v) => setInputMode(v as "upload" | "paste")}>
+          <TabsList className="w-full">
+            <TabsTrigger value="upload" className="flex-1 gap-2">
+              <Upload className="w-4 h-4" /> Upload PDF
+            </TabsTrigger>
+            <TabsTrigger value="paste" className="flex-1 gap-2">
+              <ClipboardPaste className="w-4 h-4" /> Paste Text
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="upload">
+            <div
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={handleDrop}
+              className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors cursor-pointer ${
+                file ? "border-primary bg-primary/5" : "border-border hover:border-primary/40 hover:bg-muted/50"
+              }`}
+              onClick={() => document.getElementById("file-input")?.click()}
+            >
+              <input
+                id="file-input"
+                type="file"
+                accept=".pdf"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+              {file ? (
+                <div className="flex items-center justify-center gap-3">
+                  <FileText className="w-8 h-8 text-primary" />
+                  <div className="text-left">
+                    <p className="font-medium">{file.name}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {(file.size / 1024 / 1024).toFixed(2)} MB
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Upload className="w-10 h-10 text-muted-foreground mx-auto" />
+                  <p className="font-medium">Drop your contract PDF here or click to browse</p>
+                  <p className="text-sm text-muted-foreground">Text-based PDFs up to 25MB. For scanned PDFs, use Paste Text.</p>
+                </div>
+              )}
             </div>
-          ) : (
-            <div className="space-y-2">
-              <Upload className="w-10 h-10 text-muted-foreground mx-auto" />
-              <p className="font-medium">Drop your contract PDF here or click to browse</p>
-              <p className="text-sm text-muted-foreground">PDF files up to 25MB</p>
-            </div>
-          )}
-        </div>
+          </TabsContent>
+
+          <TabsContent value="paste">
+            <Textarea
+              value={pastedText}
+              onChange={(e) => setPastedText(e.target.value)}
+              placeholder="Paste your contract text here. Open the PDF, select all text (Cmd+A), copy (Cmd+C), and paste here."
+              className="min-h-[200px] font-mono text-sm"
+            />
+            {pastedText.trim().length > 0 && (
+              <p className="text-xs text-muted-foreground mt-1">
+                {pastedText.trim().length.toLocaleString()} characters
+              </p>
+            )}
+          </TabsContent>
+        </Tabs>
 
         {/* Processing Progress */}
         {processing && (
@@ -203,7 +269,7 @@ export default function ContractUpload({ onAnalysis, onObligations }: Props) {
           size="lg"
           className="w-full"
           onClick={handleAnalyze}
-          disabled={!file || !vendorName || !vendorCategory || processing}
+          disabled={!isReady || processing}
         >
           {processing ? (
             <><Loader2 className="w-4 h-4 animate-spin" /> Analyzing...</>
