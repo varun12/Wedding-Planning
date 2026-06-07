@@ -17,11 +17,12 @@ Wedding-Planning/
     ├── Design/                ← wireframes, evals, master prompts, use cases
     ├── Development/           ← model selection, RAG architecture, eval methods
     └── Discovery/             ← PRD v1.0, PRD v2.0
-
 ```
 
-**Claude Code writes to `app/` only.** `docs/` is PM reference material — do not modify it when making code changes.
-**Lovable syncs to `app/` only.** Connect Lovable to this GitHub repo (`varun12/Wedding-Planning`) pointing at the `app/` subfolder.
+**Claude Code writes to ****`app/`**** only.** `docs/` is PM reference material — do not modify it when making code changes.
+**Lovable syncs to ****`app/`**** only.** Connect Lovable to this GitHub repo (`varun12/Wedding-Planning`) pointing at the `app/` subfolder.
+
+**Working rule — capstone Q&A:** When answering product or capstone questions whose answers have future build value (launch strategy, marketing assets, infra, evals, architecture decisions), save the answer to the appropriate file in `docs/` before responding. Use: `docs/Design/` for product, UX, marketing, and eval artifacts; `docs/Development/` for technical architecture, infra, and deployment decisions; `docs/Discovery/` for PRD updates and research.
 
 ---
 
@@ -268,10 +269,10 @@ The following are **explicitly excluded** from V1:
 
 ### AI Architecture: Contract Intelligence Pipeline
 1. **Frontend** uploads contract PDF to Supabase Storage
-2. **Supabase Edge Function (`analyze-contract`)** — extracts PDF text, calls Claude API with structured summarization prompt
+2. **Supabase Edge Function (****`analyze-contract`****)** — extracts PDF text, calls Claude API with structured summarization prompt
 3. **Claude API** — Flag generation: evaluates each clause against Indian wedding vendor contract norms; generates traffic light ratings + explanations
 4. **Claude API** — Risk scoring: aggregates flags into Low/Medium/High risk score with plain-language rationale
-5. **Supabase Edge Function (`draft-response`)** — receives flagged clause + vendor category + planner style profile; calls Claude API
+5. **Supabase Edge Function (****`draft-response`****)** — receives flagged clause + vendor category + planner style profile; calls Claude API
 6. **Claude API** — Response drafting: generates targeted negotiation email
 7. **Claude API** — Obligation extraction: extracts time-bound obligations from signed contract; returns structured JSON for Obligation Tracker
 
