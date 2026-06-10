@@ -135,3 +135,39 @@ These are not blocking for the capstone but must be resolved before public launc
 - Obligation check-off state not persisted to database (UI-only)
 - No blue/green deployment — rollback requires git revert and manual redeploy
 - Monitoring is manual (log inspection) rather than automated dashboards
+
+---
+
+## 8. Internal Communication — Launch Plans, Progress, and Outcomes
+
+### Capstone (Current — Solo Project)
+There are no internal teams. Communication is:
+- **This repository** (`varun12/Wedding-Planning`) — single source of truth for all product decisions, architecture, and build status
+- **CLAUDE.md** — onboarding doc that keeps Claude Code and the builder aligned across sessions
+- **`docs/`** — all PM artifacts, decisions, and Q&A answers saved here for continuity
+- **Capstone submission** — the external deliverable that communicates progress and outcomes to Product Faculty evaluators
+
+### Phase 1 Private Beta (20 planners)
+Solo founder communication model:
+- **Weekly email update** to beta planners — what shipped, what's being fixed, what's coming next. Short (< 200 words). Builds trust and keeps users engaged during beta.
+- **Feedback form** after each contract analysis — 2 questions: accuracy rating + one open field. Responses tracked in a shared sheet.
+- **Direct Slack or WhatsApp channel** with beta planners — fast feedback loop, bug reports, and feature requests surface immediately.
+
+### Phase 2 Public Launch and Beyond
+As the team grows, communication formalizes:
+
+| Audience | Channel | Cadence | Content |
+|----------|---------|---------|---------|
+| Early planner users | Email newsletter | Weekly | New features, tips, market insights |
+| Beta feedback cohort | Dedicated Slack/WhatsApp | Ongoing | Direct conversation, bug reports |
+| Investors / advisors | Metrics dashboard or email update | Monthly | MRR, active accounts, NPS, contracts reviewed |
+| Internal team (when hired) | Linear (issues) + Notion (docs) or equivalent | Daily standup + weekly review | Sprint progress, launch readiness, incident reports |
+| Public / community | Instagram, Reddit, blog | As shipped | Feature announcements, product stories |
+
+### Key Metrics to Communicate at Launch
+At each phase gate, report on:
+1. **Adoption:** Planner accounts activated, contracts reviewed in first session
+2. **Quality:** AI accuracy rating, flag helpfulness thumbs-up rate
+3. **Revenue:** MRR, free-to-paid conversion rate
+4. **Reliability:** Edge function error rate, average contract analysis latency
+5. **Feedback:** Top 3 requested features from beta cohort
