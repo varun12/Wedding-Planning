@@ -115,3 +115,112 @@ Support is a product intelligence channel — not just a cost center. Every supp
 | Obligation tracker state lost on refresh | Confirms obligation persistence as a priority fix (see TODOs) |
 
 Monthly support review: founder reviews all tickets, identifies top 3 recurring issues, maps to product or prompt actions.
+
+---
+
+## 8. Feedback Gathering
+
+### Active Channels
+| Channel | Signal Type | When |
+|---------|------------|------|
+| Post-contract analysis rating (in-app) | AI quality — accuracy rating (1–5) + open text | After every contract analysis |
+| Thumbs up/down on individual flags | Flag-level accuracy signal | Inline in contract summary |
+| Beta planner WhatsApp/Slack group | Qualitative — friction, missing features, confusion | Ongoing during Phase 1 |
+| User interviews (pre-launch) | Deep qualitative — jobs to be done, workflow gaps | ≥ 3 planners + 3 couples before MVP submission |
+| Support tickets | Bug reports, confusion, feature requests | Post-launch |
+| Monthly NPS survey (V1 launch) | Satisfaction and referral intent | Monthly, starting Month 2 post-launch |
+
+### Passive Signals
+| Signal | What It Indicates |
+|--------|------------------|
+| High edit rate on AI-generated response drafts | Module C tone or clause specificity is off |
+| Low contract analysis completion rate (upload but no analysis) | Friction in upload flow or PDF extraction failing silently |
+| Obligation tracker not used after contract signed | Feature discoverability issue or trust gap |
+| Short session times after first contract | Onboarding not converting to ongoing use |
+
+---
+
+## 9. Bug Triage — Severity Classification
+
+All bugs and feedback items are assigned a priority level at intake.
+
+| Priority | Definition | Examples |
+|----------|-----------|---------|
+| **P0 — Critical** | Platform broken or user data at risk. Requires immediate fix regardless of time. | App inaccessible, AI returning wrong contract data for the wrong user, data breach, edge function down for all users |
+| **P1 — High** | Core feature broken for a significant portion of users. Workaround may exist but is unacceptable. | Contract analysis failing for all text PDFs, response drafting returning empty, obligations not populating after analysis |
+| **P2 — Medium** | Feature degraded or confusing but workaround exists. Users can continue core workflow. | Obligation check-off state not persisted (current known issue), scanned PDF not giving clear error message, style profile not applying consistently |
+| **P3 — Low** | Polish, nice-to-have, or edge case with minimal user impact. | Copy improvements, minor UI alignment issues, non-critical missing tooltips |
+
+### Triage Owner
+- **Beta (Phase 1):** Founder triages all incoming issues within 24 hours
+- **V1 launch:** Weekly triage meeting; founder + customer success; bugs logged in Linear (or GitHub Issues)
+
+---
+
+## 10. Acting on Feedback and Bugs
+
+### Resolution Targets by Priority
+
+| Priority | Fix Target | Communication |
+|----------|-----------|---------------|
+| P0 | Same day — drop everything | Notify affected users within 1 hour; post status update when resolved |
+| P1 | Within 1 week (beta); within 72 hours (V1 launch) | Acknowledge within 4 hours; communicate fix timeline |
+| P2 | Next planned release cycle | Acknowledge within 24 hours; add to backlog |
+| P3 | Backlog — prioritized by frequency | No individual acknowledgment needed; batch in release notes |
+
+### AI-Specific Bug Handling
+AI accuracy issues follow a different path from standard bugs — they require an eval run, not just a code fix:
+
+1. User reports AI inaccuracy (wrong flag rating, missed clause, hallucinated term)
+2. Founder reviews the specific contract output manually
+3. If confirmed: log as eval failure, identify which benchmark was violated, determine root cause (prompt gap vs. model behavior)
+4. If prompt gap: update master prompt, run full eval on affected modules before deploying
+5. If model behavior: add to golden test set as a known edge case; monitor for recurrence
+6. Communicate fix to user once deployed
+
+**Rule:** No AI accuracy fix ships without running the affected module's eval suite first. A code-only fix that skips evals risks introducing a new regression while fixing the reported issue.
+
+### Feedback-to-Product Pipeline
+| Frequency | What | Output |
+|-----------|------|--------|
+| Weekly (beta) | Review all feedback from beta planners | Top 3 friction points identified; P0/P1 bugs fixed; product backlog updated |
+| Monthly (post-launch) | Full support ticket review + NPS responses | Recurring themes mapped to roadmap items; prompt improvements scheduled |
+| Quarterly | Aggregate trend analysis | Informs V2 planning priorities |
+
+---
+
+## 11. Critical Issue Communication
+
+### Internal (Solo / Small Team)
+During beta, the founder is the only internal stakeholder. No internal communication protocol needed beyond maintaining a running issue log.
+
+### External — Communicating to Users
+
+**P0 — Platform outage or data incident:**
+- First communication within **1 hour** of identifying the issue
+- Message: what is affected, what is not affected, estimated resolution time
+- Channel: direct message to all active users via email or WhatsApp/Slack group
+- Follow-up: resolution confirmation when fixed; brief post-mortem if outage > 2 hours
+
+**P0 — AI accuracy issue (wrong output shipped to users):**
+- Acknowledge within **24 hours** of confirmation
+- Message: what the issue was, which contract analyses may have been affected, what to do (re-run or contact support)
+- Do not minimize — trust is the product's core asset
+
+**P1 — Feature degraded:**
+- Acknowledge within **4 hours** if user-reported
+- Message: issue confirmed, fix in progress, workaround if available
+- Resolution update when shipped
+
+**Ongoing beta communication:**
+- Weekly update email to beta planners: what shipped, what broke and was fixed, what's coming next
+- Tone: transparent and direct — beta users signed up to help shape the product, not to receive a polished PR message
+
+### Status Page (V1 Launch)
+Before public launch, set up a simple status page (e.g., Statuspage.io or a hosted status page) covering:
+- Shaadi AI app (uptime)
+- Supabase (database + auth)
+- AI contract analysis (edge function)
+- Response drafting (edge function)
+
+Link the status page from the login screen and help center so users can self-diagnose before contacting support.
