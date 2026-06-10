@@ -9,6 +9,41 @@
 
 ---
 
+## AI Performance Measurement — Summary
+
+### What is measured
+AI performance is evaluated across five dimensions:
+
+| Dimension | What It Covers | Key Benchmark |
+|-----------|---------------|---------------|
+| **Accuracy** | Do contract summaries and flags correctly reflect the source document? | Module A (clause coverage ≥ 4.0/5), Module B (flag accuracy ≥ 4.0/5, missed RED ≤ 5%) |
+| **Hallucination avoidance** | Does the AI invent facts not present in the contract? | U3 — 100% pass rate, zero tolerance |
+| **Cultural correctness** | Are Indian wedding vendor norms, event types, and cultural terms used accurately? | Module B (market norm benchmarks), Module H (cultural accuracy ≥ 4.0/5) |
+| **Output quality** | Is the output clear, send-ready, and at the right reading level? | Module A (8th-grade reading level), Module C (send-readiness ≥ 2.5/3) |
+| **Reliability** | Does the AI behave consistently across repeated runs? | C3 style adherence tested ≥ 5 runs; B2 false negative rate tracked over time |
+
+### How it is measured — three-tier system
+- **Tier 1 — Automated scripts (40% of coverage):** JSON schema validation, field presence checks, date math verification, risk score consistency rules, string matching for disclaimer presence. Fast, free, runs on every eval.
+- **Tier 2 — Model grader (45% of coverage):** A second Claude call evaluates the output against rubric criteria. Used for reading level scoring, tone classification, clause specificity. Scales without human time.
+- **Tier 3 — Human review (15% of coverage):** Required for flag accuracy (B1), cultural accuracy (H2), and anything involving Indian wedding domain knowledge that a model cannot reliably self-evaluate.
+
+### When evals run — trigger-based cadence
+- Before every demo or launch gate (MVP, V1)
+- Before any prompt change goes to production
+- Every 25 contracts added to the benchmark library (Module B only)
+- Weekly during private beta (Modules A and B)
+- Monthly post-launch (full suite)
+- Immediately before any Claude model version upgrade
+
+### Targets that define "good enough to ship"
+- Missed RED flags (false negative rate): ≤ 5% — the single most critical metric
+- Contract summary accuracy: ≥ 90% of key sections correctly extracted (human review)
+- Risk score alignment with human assessment: ≥ 85%
+- Hallucination: 0% — any invented clause is a blocker
+- Legal disclaimer present: 100% — zero tolerance
+
+---
+
 ## Purpose
 
 This document defines what "good" looks like for every AI output in Shaadi AI. It is the benchmark used to:
