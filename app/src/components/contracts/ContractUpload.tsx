@@ -192,16 +192,16 @@ export default function ContractUpload({ onAnalysis, onObligations }: Props) {
 
         {/* Input Mode Tabs */}
         <Tabs value={inputMode} onValueChange={(v) => setInputMode(v as "upload" | "paste")}>
-          <TabsList className="w-full">
-            <TabsTrigger value="upload" className="flex-1 gap-2">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="upload" className="gap-2">
               <Upload className="w-4 h-4" /> Upload PDF
             </TabsTrigger>
-            <TabsTrigger value="paste" className="flex-1 gap-2">
+            <TabsTrigger value="paste" className="gap-2">
               <ClipboardPaste className="w-4 h-4" /> Paste Text
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="upload">
+          <TabsContent value="upload" className="mt-4">
             <div
               onDragOver={(e) => e.preventDefault()}
               onDrop={handleDrop}
@@ -237,7 +237,7 @@ export default function ContractUpload({ onAnalysis, onObligations }: Props) {
             </div>
           </TabsContent>
 
-          <TabsContent value="paste">
+          <TabsContent value="paste" className="mt-4">
             <Textarea
               value={pastedText}
               onChange={(e) => setPastedText(e.target.value)}
